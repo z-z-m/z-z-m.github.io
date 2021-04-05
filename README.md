@@ -1,4 +1,4 @@
-# z-z-m.github.io
+﻿# z-z-m.github.io
 
 # electronforge
 - install node and npm
@@ -30,14 +30,7 @@ yarn add --dev @electron-forge/cli
 yarn electron-forge import
 ```
 
-- 卡住解决方案
-```
-https://blog.csdn.net/xia_yanbing/article/details/113662899
-在Administrator/.npmrc里做如下设置，
-electron_mirror="https://npm.taobao.org/mirrors/electron/"
-如果您使用的是yarn，请将 ~/.npmrc里添加以下配置
-ELECTRON_MIRROR "https://npm.taobao.org/mirrors/electron/"
-```
+
 
 - 测试
 ```
@@ -46,4 +39,24 @@ yarn start
 ```
 
 - 打包
+`yarn package`
 `yarn make`
+`yarn publish`
+
+- 使用electron-builder打包
+`yarn global add electron-builder` 
+`electron-builder --win --x64`
+
+## 常见问题
+- Install Dependancies卡住解决方案
+```
+https://blog.csdn.net/xia_yanbing/article/details/113662899
+在Administrator/.npmrc里做如下设置，
+electron_mirror="https://npm.taobao.org/mirrors/electron/"
+如果您使用的是yarn，请将 ~/.npmrc里添加以下配置
+ELECTRON_MIRROR "https://npm.taobao.org/mirrors/electron/"
+```
+
+- Preparing to Package Application for arch 卡住
+- 暂时未知，可能需要升级node到最新版本
+
