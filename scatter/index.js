@@ -79,13 +79,13 @@ function initCity(scene) {
 			//load a text file and output the result to the console
 			loader.load(
 				// resource URL
-				'data.csv',
+				'https://raw.githubusercontent.com/z-z-m/z-z-m.github.io/main/scatter/data.csv',
 				// onLoad callback
 				function ( data ) 
 				{
 					// output the text to the console
 					console.log( data )
-					var csvarry = data.split("\r\n");
+					var csvarry = data.split("\n");
 					for(var i = 1;i<csvarry.length;i++)
 					{
 						var data = {};
