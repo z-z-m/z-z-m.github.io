@@ -19,9 +19,17 @@
 			import { GUI } from './lib/dat.gui.module.js';
 
 			let camera, scene, renderer, stats, controls;
-			let mesh;
+			let objmesh;
+            const dummy = new THREE.Object3D();
 
-			const dummy = new THREE.Object3D();
+            const materialargs = {
+					color: 0xffffff,
+					specular: 0x050505,
+					shininess: 50,
+					emissive: 0x000000
+				};
+
+			
 
             //readcsv
             var rawdata = null;
@@ -29,7 +37,7 @@
             //load a text file and output the result to the console
             loader.load(
                 // resource URL
-                'data.csv',
+                'data2.csv',
                 // onLoad callback
                 function ( data ) 
                 {
@@ -69,6 +77,20 @@
 
 				scene = new THREE.Scene();
 
+
+                //
+                const loadersky = new THREE.CubeTextureLoader();
+                const texturesky = loadersky.load([
+                './assets/nebula/posx.png',
+                './assets/nebula/negx.png',
+                './assets/nebula/posy.png',
+                './assets/nebula/negy.png',
+                './assets/nebula/posz.png',
+                './assets/nebula/negz.png',
+                ]);
+                scene.background = texturesky;
+
+                
                 const geometry = new THREE.SphereGeometry( 0.5, 24, 12 );
                 const size = 0.1;
                 geometry.scale( 0.5, 0.5, 0.5 );
@@ -77,15 +99,15 @@
                 // check overdraw
                 // let material = new THREE.MeshBasicMaterial( { color: 0xff0000, opacity: 0.1, transparent: true } );
 
-                mesh = new THREE.InstancedMesh( geometry, material, rawdata.length );
+                objmesh = new THREE.InstancedMesh( geometry, material, rawdata.length );
 
-                mesh.instanceMatrix.setUsage( THREE.DynamicDrawUsage ); // will be updated every frame
-                scene.add( mesh );
+                objmesh.instanceMatrix.setUsage( THREE.DynamicDrawUsage ); // will be updated every frame
+                scene.add( objmesh );
 
                 //
 
                 const gui = new GUI();
-                gui.add( mesh, 'count', 0, rawdata.length );
+                gui.add( objmesh, 'count', 0, rawdata.length );
 
 				//
 
@@ -131,18 +153,22 @@
 			function render() {
                // console.log( 'rendering' );
                 //console.log( rawdata );
-				if ( mesh ) {
+				if ( objmesh ) {
                     //console.log( rawdata );
                     for ( let x = 1; x < rawdata.length; x ++ ) //we start from 1 because 1st line is header
                     {
                         console.log( rawdata[x] );
                         console.log( 'change position');
                         dummy.position.set(rawdata[x][0], rawdata[x][1], rawdata[x][2]);
+                        //materialargs.color = new THREE.Color().setHSL(  rawdata[x][2]*20, 0.5, 0.5 );
+                        //const m = new THREE.MeshPhongMaterial( materialargs );
+                        //dummy.material = m;
                         dummy.updateMatrix();
-                        mesh.setMatrixAt( x, dummy.matrix );
+                       
+                        objmesh.setMatrixAt( x, dummy.matrix );
 
                     }
-					mesh.instanceMatrix.needsUpdate = true;
+					objmesh.instanceMatrix.needsUpdate = true;
 				}
 
                 renderer.render( scene, camera );
