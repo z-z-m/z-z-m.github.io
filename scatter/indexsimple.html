@@ -33,6 +33,7 @@
 	<script src="./lib/three.js"></script>
 	<script src="./lib/OrbitControls.js"></script>
 	<script src="./libs/progressbar.js"></script>
+	<script lang="javascript" src="./libs/sheetjs/xlsx.full.min.js"></script>
 	<script>
 		var renderer, scene, camera;
 		var controls, group;
@@ -159,11 +160,38 @@
 				//load a text file and output the result to the console
 				loader.load(
 					// resource URL
-					'data3.csv',
+					'data.csv',
 					// onLoad callback
 					function ( data ) 
 					{
+						//excel sample
+						/* converts an array of array-like objects into an array of arrays */
+						function prep(arr) {
+							var out = [];
+							for(var i = 0; i < arr.length; ++i) {
+								if(!arr[i]) continue;
+								if(Array.isArray(arr[i])) { out[i] = arr[i]; continue };
+								var o = new Array();
+								Object.keys(arr[i]).forEach(function(k) { o[+k] = arr[i][k] });
+								out[i] = o;
+							}
+							return out;
+						}
+
+						/* build worksheet from the grid data */
+						var ws = XLSX.utils.aoa_to_sheet(prep(data));
+
+						/* build up workbook */
+						var wb = XLSX.utils.book_new();
+						XLSX.utils.book_append_sheet(wb, ws, 'SheetJS');
+                        
+
+						//
+						/* generate download */
+						XLSX.writeFile(wb, "SheetJS.xlsx");
 						// output the text to the console
+
+
 						//console.log( data )
 						var csvarry = data.split("\n");
 						for(var i = 1;i<csvarry.length;i++)
@@ -232,6 +260,7 @@
 		var selectedObject = null; 
 		function onDocumentMouseMove( event ) {
 			event.preventDefault();
+			
 			if ( selectedObject ) {
 				selectedObject.material.color.set( '#69f' );  
 				selectedObject = null; 
