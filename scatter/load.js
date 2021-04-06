@@ -16,6 +16,7 @@ function initCity(scene) {
 
 
     function getCity() {
+        /*
         var uniform = {
             u_color: { value: new THREE.Color("#5588aa") },
             u_tcolor: { value: new THREE.Color("#ff9800") },
@@ -58,7 +59,7 @@ function initCity(scene) {
                 }
             `
         }
-
+        
         material = new THREE.ShaderMaterial({
             vertexShader: Shader.vertexShader,
             fragmentShader: Shader.fragmentShader,
@@ -68,7 +69,7 @@ function initCity(scene) {
             depthWrite: false,
         });
 
-        /*
+        
         var loaderobj = new THREE.OBJLoader()
         loaderobj.load('./assets/city-gry1.obj', function (object) {
             object.children.forEach(element => {
@@ -104,7 +105,7 @@ function initCity(scene) {
 					shininess: 50,
 					emissive: 0x000000
 				};
-                var m = new THREE.MeshBasicMaterial( { color: 0x0000ff ,side:THREE.DoubleSide} );
+                
 				const geometry = new THREE.SphereGeometry( 0.5, 24, 12 );
                 const size = 0.1;
 
