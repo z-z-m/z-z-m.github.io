@@ -170,7 +170,7 @@ function Initialize(opt) {
         }
     }
     var gui = new dat.GUI();
-    var guiAdd = gui.addFolder("基础");
+    var guiAdd = gui.addFolder("Settings");
     guiAdd.add(params, 'exposure', 0.1, 2).onChange(function (value) {
         renderer.toneMappingExposure = Math.pow(value, 4.0);
     });

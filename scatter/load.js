@@ -1,5 +1,6 @@
 function initCity(scene) {
     var material = null;
+
     function getCity() {
         var uniform = {
             u_color: { value: new THREE.Color("#5588aa") },
@@ -52,6 +53,8 @@ function initCity(scene) {
             transparent: true,
             depthWrite: false,
         });
+
+        /*
         var loaderobj = new THREE.OBJLoader()
         loaderobj.load('./assets/city-gry1.obj', function (object) {
             object.children.forEach(element => {
@@ -61,7 +64,7 @@ function initCity(scene) {
             object.scale.set(size, size, size)
             scene.add(object);
             object.name = "city";
-        });
+        });*/
 
      
 
@@ -72,49 +75,123 @@ function initCity(scene) {
 			var group2 = new THREE.Group();
 			group.add(group2);
 			group2.add(circleP1);*/
-			
-			//readcsv
-			var loader = new THREE.FileLoader(); 
 
-			//load a text file and output the result to the console
-			loader.load(
-				// resource URL
-				'https://raw.githubusercontent.com/z-z-m/z-z-m.github.io/main/scatter/data.csv',
-				// onLoad callback
-				function ( data ) 
-				{
-					// output the text to the console
-					console.log( data )
-					var csvarry = data.split("\n");
-					for(var i = 1;i<csvarry.length;i++)
-					{
-						var data = {};
-						var temp = csvarry[i].split(",");
-						console.log( temp );
-						//adding objects
-						var g = new THREE.BoxGeometry(1,1,1);
-						//var m = new THREE.MeshBasicMaterial( { color: 0x0000ff ,side:THREE.DoubleSide} );
-						var c = new THREE.Mesh( g, material );			
-						//c.position.set(0, 0, 0);
-						var x = parseFloat(temp[0])*1;
-						var y = parseFloat(temp[1])*1;
-						var z = parseFloat(temp[2])*100;
-						console.log( x );
-						console.log( y );
-						console.log( z );
+            // Generate a number of text labels, from 1µm in size up to 100,000,000 light years
+			// Try to use some descriptive real-world examples of objects at each scale
 
-						c.position.set(x,z,y); 
-						//geometryP.rotateY(Math.PI/2);
-						//var group1 = new THREE.Group();
-                        group = new THREE.Group();
-                        scene.add(group);
-						group.add(c);
-					
-					
-					};
+            function initTextAndSphere( font ) {
 
-				}
-			);
+                group = new THREE.Group();
+                scene.add(group);
+
+				const materialargs = {
+					color: 0xffffff,
+					specular: 0x050505,
+					shininess: 50,
+					emissive: 0x000000
+				};
+                var m = new THREE.MeshBasicMaterial( { color: 0x0000ff ,side:THREE.DoubleSide} );
+				const geometry = new THREE.SphereGeometry( 0.5, 24, 12 );
+                const scale = 1;
+                const size = 1;
+
+                //readcsv
+                var loader = new THREE.FileLoader(); 
+
+                //load a text file and output the result to the console
+                loader.load(
+                    // resource URL
+                    'data2.csv',
+                    // onLoad callback
+                    function ( data ) 
+                    {
+                        // output the text to the console
+                        console.log( data )
+                        var csvarry = data.split("\n");
+                        for(var i = 1;i<csvarry.length;i++)
+                        {
+                            var data = {};
+                            var temp = csvarry[i].split(",");
+                            //console.log( temp );
+                            //c.position.set(0, 0, 0);
+                            var x = parseFloat(temp[0])*1;
+                            var y = parseFloat(temp[1])*1;
+                            var z = parseFloat(temp[2])*100;
+                            console.log( x );
+                            console.log( y );
+                            console.log( z );
+
+                            
+                            const labelgeo = new THREE.TextGeometry( temp[2], {
+                                font: font,
+                                size: size,
+                                height: size / 2
+                            } );
+
+                            //materialargs.color = new THREE.Color().setHSL( Math.random(), 0.5, 0.5 );
+                            materialargs.color = new THREE.Color().setHSL(  parseFloat(temp[2])*20, 0.5, 0.5 );
+
+                            const material = new THREE.MeshPhongMaterial( materialargs );
+                            //text
+                            const textmesh = new THREE.Mesh( labelgeo, material );
+                            textmesh.position.set(x,z,y); 
+                            //group.add( textmesh ); //slow
+
+                            //dot
+                            const dotmesh = new THREE.Mesh( geometry, material );
+                            dotmesh.position.set(x,z,y); 
+                            group.add(dotmesh);
+                         
+                        };
+
+                    }
+                );
+                /*
+				for ( let i = 0; i < labeldata.length; i ++ ) {
+
+					const scale = labeldata[ i ].scale || 1;
+
+					const labelgeo = new THREE.TextGeometry( labeldata[ i ].label, {
+						font: font,
+						size: labeldata[ i ].size,
+						height: labeldata[ i ].size / 2
+					} );
+
+					labelgeo.computeBoundingSphere();
+
+					// center text
+					labelgeo.translate( - labelgeo.boundingSphere.radius, 0, 0 );
+
+					materialargs.color = new THREE.Color().setHSL( Math.random(), 0.5, 0.5 );
+
+					const material = new THREE.MeshPhongMaterial( materialargs );
+
+					const group = new THREE.Group();
+					group.position.z = - labeldata[ i ].size * scale;
+					scene.add( group );
+
+					const textmesh = new THREE.Mesh( labelgeo, material );
+					textmesh.scale.set( scale, scale, scale );
+					textmesh.position.z = - labeldata[ i ].size * scale;
+					textmesh.position.y = labeldata[ i ].size / 4 * scale;
+					group.add( textmesh );
+
+					const dotmesh = new THREE.Mesh( geometry, material );
+					dotmesh.position.y = - labeldata[ i ].size / 4 * scale;
+					dotmesh.scale.multiplyScalar( labeldata[ i ].size * scale );
+					group.add( dotmesh );
+
+				}*/
+			}
+            
+			//
+            const loaderf = new THREE.FontLoader();
+            loaderf.load( 'fonts/helvetiker_regular.typeface.json', function ( font ) {
+
+                initTextAndSphere( font );
+
+            } );
+
 
     }
     this.animation = function (dalte) {
