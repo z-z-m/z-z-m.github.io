@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<title>three.js webgl - instancing - dynamic</title>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+        <link type="text/css" rel="stylesheet" href="main.css">
+        <script src="./lib/three.js"></script>
+        <script src="./lib/OrbitControls.js"></script>
+        <script src="./libs/progressbar.js"></script>
+	</head>
+	<body>
+
+		<script type="module">
+
+			import * as THREE from './lib/three.module.js';
+
+			import Stats from './lib/stats.module.js';
+			import { GUI } from './lib/dat.gui.module.js';
+
+			let camera, scene, renderer, stats, controls;
+			let mesh;
+
+			const dummy = new THREE.Object3D();
+
+            //readcsv
+            var rawdata = null;
+            var loader = new THREE.FileLoader(); 
+            //load a text file and output the result to the console
+            loader.load(
+                // resource URL
+                'data.csv',
+                // onLoad callback
+                function ( data ) 
+                {
+                    var csvarry = data.split("\n");
+
+                    rawdata = new Array(csvarry.length);
+
+                    for(var i = 1;i<csvarry.length;i++)
+                    {
+                        var temp = csvarry[i].split(",");
+                        var x = parseFloat(temp[0])*1;
+                        var y = parseFloat(temp[1])*1;
+                        var z = parseFloat(temp[2])*10;
+
+                        rawdata[i]=new Array(3); 
+                        rawdata[i][0]=x;
+                        rawdata[i][1]=z; //swap y and z
+                        rawdata[i][2]=y;
+                        console.log( rawdata[i] );
+
+                    };
+
+                    init();
+                }
+            );
+
+            console.log( rawdata );
+ 
+            
+            animate();
+
+			function init() {
+
+				camera = new THREE.PerspectiveCamera( 60, window.innerWidth / window.innerHeight, 0.1, 100 );
+				camera.position.set( 15, 15, 15 );
+				camera.lookAt( 0, 0, 0 );
+
+				scene = new THREE.Scene();
+
+                const geometry = new THREE.SphereGeometry( 0.5, 24, 12 );
+                const size = 0.1;
+                geometry.scale( 0.5, 0.5, 0.5 );
+
+                const material = new THREE.MeshNormalMaterial();
+                // check overdraw
+                // let material = new THREE.MeshBasicMaterial( { color: 0xff0000, opacity: 0.1, transparent: true } );
+
+                mesh = new THREE.InstancedMesh( geometry, material, rawdata.length );
+
+                mesh.instanceMatrix.setUsage( THREE.DynamicDrawUsage ); // will be updated every frame
+                scene.add( mesh );
+
+                //
+
+                const gui = new GUI();
+                gui.add( mesh, 'count', 0, rawdata.length );
+
+				//
+
+				renderer = new THREE.WebGLRenderer( { antialias: true } );
+				renderer.setPixelRatio( window.devicePixelRatio );
+				renderer.setSize( window.innerWidth, window.innerHeight );
+				document.body.appendChild( renderer.domElement );
+
+                //
+                //controls = new THREE.OrbitControls( camera, renderer.domElement );
+			    //controls.enableRotate = true;
+
+				//
+
+				stats = new Stats();
+				document.body.appendChild( stats.dom );
+
+				//
+
+				window.addEventListener( 'resize', onWindowResize );
+
+			}
+
+			function onWindowResize() {
+
+				camera.aspect = window.innerWidth / window.innerHeight;
+				camera.updateProjectionMatrix();
+
+				renderer.setSize( window.innerWidth, window.innerHeight );
+
+			}
+
+			//
+
+			function animate() {
+
+				requestAnimationFrame( animate );
+				render();
+                stats.update();
+
+			}
+
+			function render() {
+               // console.log( 'rendering' );
+                //console.log( rawdata );
+				if ( mesh ) {
+                    //console.log( rawdata );
+                    for ( let x = 1; x < rawdata.length; x ++ ) //we start from 1 because 1st line is header
+                    {
+                        console.log( rawdata[x] );
+                        console.log( 'change position');
+                        dummy.position.set(rawdata[x][0], rawdata[x][1], rawdata[x][2]);
+                        dummy.updateMatrix();
+                        mesh.setMatrixAt( x, dummy.matrix );
+
+                    }
+					mesh.instanceMatrix.needsUpdate = true;
+				}
+
+                renderer.render( scene, camera );
+
+				
+
+			}
+            
+
+		</script>
+
+	</body>
+</html>
