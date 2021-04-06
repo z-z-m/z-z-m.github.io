@@ -1,6 +1,20 @@
 function initCity(scene) {
     var material = null;
 
+
+    //
+    const loadersky = new THREE.CubeTextureLoader();
+    const texturesky = loadersky.load([
+      './assets/nebula/posx.png',
+      './assets/nebula/negx.png',
+      './assets/nebula/posy.png',
+      './assets/nebula/negy.png',
+      './assets/nebula/posz.png',
+      './assets/nebula/negz.png',
+    ]);
+    scene.background = texturesky;
+
+
     function getCity() {
         var uniform = {
             u_color: { value: new THREE.Color("#5588aa") },
