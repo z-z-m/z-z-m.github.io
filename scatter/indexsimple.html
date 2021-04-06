@@ -93,9 +93,6 @@
 			
 			function initTextAndSphere( font ) {
 
-				group = new THREE.Group();
-				scene.add(group);
-
 				const materialargs = {
 					color: 0xffffff,
 					specular: 0x050505,
@@ -112,7 +109,7 @@
 				//load a text file and output the result to the console
 				loader.load(
 					// resource URL
-					'data2.csv',
+					'data3.csv',
 					// onLoad callback
 					function ( data ) 
 					{
@@ -121,16 +118,16 @@
 						var csvarry = data.split("\n");
 						for(var i = 1;i<csvarry.length;i++)
 						{
-							var data = {};
 							var temp = csvarry[i].split(",");
 							//console.log( temp );
 							//c.position.set(0, 0, 0);
 							var x = parseFloat(temp[0])*1;
 							var y = parseFloat(temp[1])*1;
 							var z = parseFloat(temp[2])*100;
-							console.log( x );
-							console.log( y );
-							console.log( z );
+							console.log( i );
+							//console.log( x );
+							//console.log( y );
+							//console.log( z );
 
 							
 							const labelgeo = new THREE.TextGeometry( temp[2], {
