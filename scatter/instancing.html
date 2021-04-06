@@ -5,9 +5,6 @@
 		<meta charset="utf-8">
 		<meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
         <link type="text/css" rel="stylesheet" href="main.css">
-        <script src="./lib/three.js"></script>
-        <script src="./lib/OrbitControls.js"></script>
-        <script src="./libs/progressbar.js"></script>
 	</head>
 	<body>
 
@@ -17,7 +14,7 @@
 
 			import Stats from './lib/stats.module.js';
 			import { GUI } from './lib/dat.gui.module.js';
-
+            import { OrbitControls } from './lib/OrbitControls.modules.js';
 			let camera, scene, renderer, stats, controls;
 			let objmesh;
             const dummy = new THREE.Object3D();
@@ -37,7 +34,7 @@
             //load a text file and output the result to the console
             loader.load(
                 // resource URL
-                'data2.csv',
+                'data3.csv',
                 // onLoad callback
                 function ( data ) 
                 {
@@ -96,6 +93,7 @@
                 geometry.scale( 0.5, 0.5, 0.5 );
 
                 const material = new THREE.MeshNormalMaterial();
+
                 // check overdraw
                 // let material = new THREE.MeshBasicMaterial( { color: 0xff0000, opacity: 0.1, transparent: true } );
 
@@ -117,8 +115,8 @@
 				document.body.appendChild( renderer.domElement );
 
                 //
-                //controls = new THREE.OrbitControls( camera, renderer.domElement );
-			    //controls.enableRotate = true;
+                controls = new OrbitControls( camera, renderer.domElement );
+			    controls.autoRotate = true;
 
 				//
 
