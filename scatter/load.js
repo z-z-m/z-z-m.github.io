@@ -114,7 +114,7 @@ function initCity(scene) {
                 //load a text file and output the result to the console
                 loader.load(
                     // resource URL
-                    'data.csv',
+                    'data2.csv',
                     // onLoad callback
                     function ( data ) 
                     {
@@ -148,7 +148,7 @@ function initCity(scene) {
                             //text
                             const textmesh = new THREE.Mesh( labelgeo, material );
                             textmesh.position.set(x,z+1,y); 
-                            group.add( textmesh ); //slow
+                            //group.add( textmesh ); //slow
 
                             //dot
                             const dotmesh = new THREE.Mesh( geometry, material );
