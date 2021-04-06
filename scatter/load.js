@@ -92,8 +92,7 @@ function initCity(scene) {
 				};
                 var m = new THREE.MeshBasicMaterial( { color: 0x0000ff ,side:THREE.DoubleSide} );
 				const geometry = new THREE.SphereGeometry( 0.5, 24, 12 );
-                const scale = 1;
-                const size = 1;
+                const size = 0.1;
 
                 //readcsv
                 var loader = new THREE.FileLoader(); 
@@ -101,7 +100,7 @@ function initCity(scene) {
                 //load a text file and output the result to the console
                 loader.load(
                     // resource URL
-                    'data2.csv',
+                    'data.csv',
                     // onLoad callback
                     function ( data ) 
                     {
@@ -134,8 +133,8 @@ function initCity(scene) {
                             const material = new THREE.MeshPhongMaterial( materialargs );
                             //text
                             const textmesh = new THREE.Mesh( labelgeo, material );
-                            textmesh.position.set(x,z,y); 
-                            //group.add( textmesh ); //slow
+                            textmesh.position.set(x,z+1,y); 
+                            group.add( textmesh ); //slow
 
                             //dot
                             const dotmesh = new THREE.Mesh( geometry, material );
