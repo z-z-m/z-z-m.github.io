@@ -20,16 +20,47 @@
 				padding: 5px;
 				text-align: center;
 			}
+			#container {
+			margin: 20px;
+			width: 400px;
+			height: 8px;
+			}
 		</style>
 	</head>
 <body>
 	<div id="info"><a href="http://threejs.org" target="_blank" rel="noopener">three.js</a> - webgl raycast sprite<br></div>
+	<div id="container"></div>
 	<script src="./lib/three.js"></script>
 	<script src="./lib/OrbitControls.js"></script>
+	<script src="./libs/progressbar.js"></script>
 	<script>
 		var renderer, scene, camera;
 		var controls, group;
 
+		//progressbar
+        //var ProgressBar = require('progressbar.js'); 
+
+		// Assuming we have an empty <div id="container"></div> in
+		// HTML
+		// progressbar.js@1.0.0 version is used
+		// Docs: http://progressbarjs.readthedocs.org/en/1.0.0/
+
+		var bar = new ProgressBar.Line(container, {
+		strokeWidth: 4,
+		easing: 'easeInOut',
+		duration: 1400,
+		color: '#FFEA82',
+		trailColor: '#eee',
+		trailWidth: 1,
+		svgStyle: {width: '100%', height: '100%'}
+		});
+
+		//bar.animate(1.0);  // Number from 0.0 to 1.0
+
+
+
+
+		//
 		init();
 		animate();
 
@@ -81,8 +112,27 @@
 			group = new THREE.Group();
 			scene.add(group);
 	
-
 			
+			
+			//loading manager
+			var manager = new THREE.LoadingManager();
+
+			manager.onStart = function (loaded, total) {
+				console.log('Loading started');
+			};
+
+			manager.onLoad = function () {
+				console.log('Loading complete');            
+				bar.destroy();
+			};
+
+			manager.onProgress = function (loaded, total) {            
+				console.log(loaded, total);
+				console.log('Loaded:', Math.round(loaded / total * 100, 2) + '%')
+				bar.animate(1.0);
+			};
+
+
 			/*
 			geometryP1 = new THREE.BoxGeometry(-10,-10,10);	 
 			var materialP1 = new THREE.MeshBasicMaterial( { color: 0x00ff00 ,side:THREE.DoubleSide} );
@@ -104,7 +154,7 @@
 				const size = 0.1;
 
 				//readcsv
-				var loader = new THREE.FileLoader(); 
+				var loader = new THREE.FileLoader(manager); 
 
 				//load a text file and output the result to the console
 				loader.load(
@@ -114,7 +164,7 @@
 					function ( data ) 
 					{
 						// output the text to the console
-						console.log( data )
+						//console.log( data )
 						var csvarry = data.split("\n");
 						for(var i = 1;i<csvarry.length;i++)
 						{
@@ -124,7 +174,8 @@
 							var x = parseFloat(temp[0])*1;
 							var y = parseFloat(temp[1])*1;
 							var z = parseFloat(temp[2])*100;
-							console.log( i );
+							//console.log( i );
+							//bar.animate(i / csvarry.length * 100);
 							//console.log( x );
 							//console.log( y );
 							//console.log( z );
