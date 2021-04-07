@@ -83,7 +83,10 @@
 				zoomy: 10,
 				zoomz: 1000,
 			};
-
+			const params = {
+				h12limit: "This is a placeholder text",
+				useSfactor : true,
+			}
 
 			var csvdata = null;
 			var pointdata = null;
@@ -114,6 +117,8 @@
 
 				scene.background = texturesky;
 				gui = new GUI();
+				gui.add( params, "h12limit").onFinishChange(movechart);
+				gui.add( params, "useSfactor").onChange(movechart);
 				gui.add( api, 'spherescale', 0.1, 10 ).step( 0.1 ).onChange( movechart );
 				gui.add( api, 'zoomx', 1, 1000 ).step( 1 ).onChange( movechart );
 				gui.add( api, 'zoomy', 1, 1000 ).step( 1 ).onChange( movechart );
@@ -390,6 +395,7 @@
 
 			function movechart()
 			{
+				console.log("move chart");
 				var spherescale = api.spherescale;//10;
 				var zoomx = api.zoomx;//10;
 				var zoomy = api.zoomy;//10;
