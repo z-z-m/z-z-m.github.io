@@ -95,3 +95,4 @@ yarn config set chromedriver_cdnurl "https://cdn.npm.taobao.org/dist/chromedrive
 
 # notice
 - 嵌入到threejs的div必须用position: absolute;否则鼠标指针选择事件获取的位置会有偏移
+- 如果ui里面的控件如滑条不更新，多半是有错误了，修改错误后即可

@@ -85,7 +85,7 @@
 			};
 
 
-			var rawdata = null;
+			var csvdata = null;
 			var pointdata = null;
 			var textdata = null;
 
@@ -251,7 +251,7 @@
 
 								var csvarry = strraw.split("\n");
 								//console.log( csvarry );
-								rawdata = new Array(csvarry.length);
+								csvdata = new Array(csvarry.length);
 								pointdata = new Array(csvarry.length);
 								textdata = new Array(csvarry.length);
 								for(var i = 1;i<csvarry.length;i++)
@@ -262,7 +262,7 @@
 									var y = parseFloat(temp[1]);
 									var z = parseFloat(temp[2]);
 
-									rawdata[i]=new THREE.Vector3( x, y, z );; 
+									csvdata[i]=new THREE.Vector3( x, y, z ); 
 									//console.log( rawdata[i] );
                                     var newx = x*zoomx;
 									var newy = y*zoomy;
@@ -394,23 +394,25 @@
 				var zoomx = api.zoomx;//10;
 				var zoomy = api.zoomy;//10;
 				var zoomz = api.zoomz;//1000;
-				if(rawdata)
+				if(csvdata)
 				{
-					for(var i = 1;i<rawdata.length;i++)
+					for(var i = 1;i<csvdata.length;i++)
 					{
-						console.log(rawdata[i]);
+						//console.log(csvdata[i]);
 						if(pointdata[i])
 						{
 							pointdata[i].scale.set(spherescale,spherescale,spherescale);
+							pointdata[i].position.x = csvdata[i].x*zoomx;
+							pointdata[i].position.y = csvdata[i].y*zoomy;
+							pointdata[i].position.z = csvdata[i].z*zoomz;
 						}
-
-						pointdata[i].position.x = rawdata[i].x*zoomx;
-						pointdata[i].position.y = rawdata[i].y*zoomy;
-						pointdata[i].position.z = rawdata[i].z*zoomz;
-
-						textdata[i].position.x = rawdata[i].x*zoomx;
-						textdata[i].position.y = rawdata[i].y*zoomy;
-						textdata[i].position.z = rawdata[i].z*zoomz+5;
+						if(pointdata[i])
+						{
+							textdata[i].position.x = csvdata[i].x*zoomx;
+							textdata[i].position.y = csvdata[i].y*zoomy;
+							textdata[i].position.z = csvdata[i].z*zoomz+5;
+						}
+						
 					}
 
 				}
@@ -457,7 +459,7 @@
 
 							INTERSECTED = intersects[ 0 ].object;
 							if ( INTERSECTED.material.emissive ) INTERSECTED.currentHex = INTERSECTED.material.emissive.getHex();
-							INTERSECTED.material.emissive.setHex( 0xff0000 );
+							if ( INTERSECTED.material.emissive ) INTERSECTED.material.emissive.setHex( 0xff0000 );
 
 						}
 
