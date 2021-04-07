@@ -97,6 +97,7 @@
 				var miny = 9999;
 				var minz = 9999;
 
+				//adding text and points
 				const loaderf = new THREE.FontLoader();
 				loaderf.load( 'fonts/helvetiker_regular.typeface.json', function ( font ) {
 
@@ -117,6 +118,7 @@
 								for(var i = 1;i<csvarry.length;i++)
 								{
 									var temp = csvarry[i].split(",");
+									if(temp[0]==null){continue;}
 									var x = parseFloat(temp[0]);
 									var y = parseFloat(temp[1]);
 									var z = parseFloat(temp[2]);
@@ -130,7 +132,7 @@
 									var newy = y*zoomy;
 									var newz = z*zoomz;
 									//add test
-									materialargs.color = new THREE.Color().setHSL(  parseFloat(temp[2])*20, 0.5, 0.5 );
+									materialargs.color = new THREE.Color().setHSL(  parseFloat(z)*20, 0.5, 0.5 );
 
 									const material = new THREE.MeshPhongMaterial( materialargs );
 									const object = new THREE.Mesh( geometry, material);
@@ -140,7 +142,7 @@
 									scene.add( object );
                                     
 									//label text
-									const labelgeo = new THREE.TextGeometry( temp[2], {
+									const labelgeo = new THREE.TextGeometry( z, {
 										font: font,
 										size: 1,
 										height: 1 / 2
@@ -159,6 +161,32 @@
 									if(miny>y){miny=y};
 									if(minz>z){minz=z};
 								};
+								//console.log( maxx );
+								//console.log( maxy );
+								//console.log( maxz );
+								//adding max min boxex
+								var newmaxx = maxx * zoomx;
+								var newmaxy = maxy * zoomy;
+								var newmaxz = maxz * zoomz;
+								var newminx = minx * zoomx;
+								var newminy = miny * zoomy;
+								var newminz = minz * zoomz;
+								const material = new THREE.LineBasicMaterial({
+									color: 0x0000ff
+								});
+								var xl = newmaxx-newminx;
+								var yl = newmaxy-newminy;
+								var zl = newmaxz-newminz;
+								//console.log( xl );
+								//console.log( yl );
+								//console.log( zl );
+								const geometryb = new THREE.BoxGeometry( xl, zl, yl );
+								const edges = new THREE.EdgesGeometry( geometryb );
+								const line = new THREE.LineSegments( edges, new THREE.LineBasicMaterial( { color: 0xffffff } ) );
+								line.position.x = newminx + xl/2;
+								line.position.y = newminz + zl/2;
+								line.position.z = newminy + yl/2;
+								scene.add( line );
 
 							},
 							// onProgress callback
@@ -168,7 +196,6 @@
 						);
 
 				} );
-
 
 
 				
@@ -268,7 +295,7 @@
 
 				const intersects = raycaster.intersectObjects( scene.children );
 
-				if ( intersects.length > 0 ) {
+/* 				if ( intersects.length > 0 ) {
 
 					if ( INTERSECTED != intersects[ 0 ].object ) {
 
@@ -286,7 +313,7 @@
 
 					INTERSECTED = null;
 
-				}
+				} */
 
 				renderer.render( scene, camera );
 
