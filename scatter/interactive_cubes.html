@@ -37,6 +37,14 @@
 			const radius = 500;
 			const frustumSize = 1000;
 
+			const materialargs = {
+					color: 0xffffff,
+					specular: 0x050505,
+					shininess: 50,
+					emissive: 0x000000
+				};
+
+
 			init();
 			animate();
 
@@ -101,7 +109,10 @@
 							console.log( rawdata[i] );
 
 							//add test
-							const object = new THREE.Mesh( geometry, new THREE.MeshLambertMaterial( { color: Math.random() * 0xffffff } ) );
+							materialargs.color = new THREE.Color().setHSL(  parseFloat(temp[2])*20, 0.5, 0.5 );
+
+							const material = new THREE.MeshPhongMaterial( materialargs );
+							const object = new THREE.Mesh( geometry, material);
 							object.position.x = x;
 							object.position.y = z;
 							object.position.z = y;
