@@ -70,22 +70,16 @@
 				var x = document.getElementById("csvdata").value;
 				//alert(x);
 				//alert(event.target.id);
-				while(scene.children.length > 0){ 
-				scene.remove(scene.children[0]); 
-				}
 				drawchart();
 			}
 
 			function buttonFunction() {
 				//do button 
 				//stuff here.
-				while(scene.children.length > 0)
-				{ 
-					scene.remove(scene.children[0]); 
-				}
 				drawchart();
 			}
 			const params = {
+				data: "paste data here",
 				h12limit: "0.015",
 				sfactor: "0.003",
 				useSfactor : true,
@@ -127,6 +121,7 @@
 				scene.background = texturesky;
 				gui = new GUI();
 				gui.remember(controls);
+				gui.add( params, "data").onFinishChange(drawchart); //need to redraw
 				gui.add( params, "h12limit").onFinishChange(drawchart); //need to redraw
 				gui.add( params, "sfactor").onFinishChange(drawchart); //need to redraw
 				gui.add( params, "useSfactor").onFinishChange(drawchart); //need to redraw
@@ -208,6 +203,7 @@
 
 			function drawchart()
 			{
+				//alert(params.data);
 				while(scene.children.length > 0){ 
 					scene.remove(scene.children[0]); 
 				}
