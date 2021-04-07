@@ -85,6 +85,7 @@
 				useSfactor : true,
 				reloadbutton : buttonFunction,
 				spherescale:1,
+				labelscale:1,
 				zoomx: 10,
 				zoomy: 10,
 				zoomz: 1000,
@@ -127,6 +128,7 @@
 				gui.add( params, "useSfactor").onFinishChange(drawchart); //need to redraw
 				gui.add( params, 'reloadbutton').name("\[click to reload\]");
 				gui.add( params, 'spherescale', 0.1, 10 ).step( 0.1 ).onChange( movechart );
+				gui.add( params, 'labelscale', 1, 10 ).step( 1 ).onChange( movechart );
 				gui.add( params, 'zoomx', 1, 1000 ).step( 1 ).onChange( movechart );
 				gui.add( params, 'zoomy', 1, 1000 ).step( 1 ).onChange( movechart );
 				gui.add( params, 'zoomz', 1, 10000 ).step( 1 ).onChange( movechart );
@@ -218,11 +220,26 @@
                 scene.add(spotLight);
 				
 			
+				const color = 0x006699;
+
+				const matDark = new THREE.LineBasicMaterial( {
+					color: color,
+					side: THREE.DoubleSide
+				} );
+
+				const matLite = new THREE.MeshBasicMaterial( {
+					color: color,
+					transparent: true,
+					opacity: 0.4,
+					side: THREE.DoubleSide
+				} );
+
 
 				//load file with font
 
                 
 				var spherescale = params.spherescale;//10;
+				var labelscale = params.labelscale;//10;
 				var zoomx = params.zoomx;//10;
 				var zoomy = params.zoomy;//10;
 				var zoomz = params.zoomz;//1000;
@@ -301,15 +318,15 @@
 								    pointdata[i] = object;
 
 									//label text
-									const labelgeo = new THREE.TextGeometry( temp[2], {
-										font: font,
-										size: 1,
-										height: 1 / 2
-									} );	
-									const textmesh = new THREE.Mesh( labelgeo, material );
+									const shapes = font.generateShapes( temp[2], 1 );
+									const tg = new THREE.ShapeGeometry( shapes );
+									tg.computeBoundingBox();
+									const textmesh = new THREE.Mesh( tg, matLite  );
+
 									textmesh.position.x = newx;
 									textmesh.position.y = newy;
 									textmesh.position.z = newz+5;
+									textmesh.scale.set(labelscale,labelscale,labelscale );
 									scene.add( textmesh ); //slow
 
 									textdata[i] = textmesh;
@@ -411,6 +428,7 @@
 			{
 				console.log("move chart");
 				var spherescale = params.spherescale;//10;
+				var labelscale = params.labelscale;//10;
 				var zoomx = params.zoomx;//10;
 				var zoomy = params.zoomy;//10;
 				var zoomz = params.zoomz;//1000;
@@ -428,6 +446,7 @@
 						}
 						if(pointdata[i])
 						{
+							textdata[i].scale.set(labelscale,labelscale,labelscale);
 							textdata[i].position.x = csvdata[i].x*zoomx;
 							textdata[i].position.y = csvdata[i].y*zoomy;
 							textdata[i].position.z = csvdata[i].z*zoomz+5;
