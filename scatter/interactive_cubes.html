@@ -207,7 +207,7 @@
 										height: labelfontsize / 2
 									} );	
 								const textmeshx = new THREE.Mesh( label, material );
-								textmeshx.position.x = newminx + xl/2;
+								textmeshx.position.x = maxx;
 								textmeshx.position.y = newminy - 10;
 								textmeshx.position.z = newminz;
 								label = new THREE.TextGeometry( "Y", {
@@ -217,7 +217,7 @@
 									} );	
 								const textmeshy = new THREE.Mesh( label, material );
 								textmeshy.position.x = newminx - 10;
-								textmeshy.position.y = newminy + yl/2;
+								textmeshy.position.y = maxy;
 								textmeshy.position.z = newminz;
 								label = new THREE.TextGeometry( "Z", {
 										font: font,
@@ -227,7 +227,7 @@
 								const textmeshz = new THREE.Mesh( label, material );
 								textmeshz.position.x = newminx - 10;
 								textmeshz.position.y = newminy - 10;
-								textmeshz.position.z = newminz + zl/2;
+								textmeshz.position.z = maxz;
 								scene.add( textmeshx ); 
 								scene.add( textmeshy ); 
 								scene.add( textmeshz ); 
