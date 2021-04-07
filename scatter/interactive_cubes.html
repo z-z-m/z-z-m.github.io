@@ -84,7 +84,8 @@
 				zoomz: 1000,
 			};
 			const params = {
-				h12limit: "This is a placeholder text",
+				h12limit: "0.015",
+				sfactor: "0.003",
 				useSfactor : true,
 			}
 
@@ -115,10 +116,24 @@
 				'./assets/nebula/negz.png',
 				]);
 
+
+				//button to reload
+				var reloadButton = new function () {
+					this.reload = function() {
+						while(scene.children.length > 0)
+						{ 
+							scene.remove(scene.children[0]); 
+						}
+						drawchart();
+					}
+				};
 				scene.background = texturesky;
 				gui = new GUI();
-				gui.add( params, "h12limit").onFinishChange(movechart);
-				gui.add( params, "useSfactor").onChange(movechart);
+				gui.remember(controls);
+				gui.add( params, "h12limit").onFinishChange(drawchart); //need to redraw
+				gui.add( params, "sfactor").onFinishChange(drawchart); //need to redraw
+				gui.add( params, "useSfactor").onFinishChange(drawchart); //need to redraw
+				gui.add( reloadButton, 'reload').name("\[click to reload\]");
 				gui.add( api, 'spherescale', 0.1, 10 ).step( 0.1 ).onChange( movechart );
 				gui.add( api, 'zoomx', 1, 1000 ).step( 1 ).onChange( movechart );
 				gui.add( api, 'zoomy', 1, 1000 ).step( 1 ).onChange( movechart );
