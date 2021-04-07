@@ -137,8 +137,8 @@
 									const material = new THREE.MeshPhongMaterial( materialargs );
 									const object = new THREE.Mesh( geometry, material);
 									object.position.x = newx;
-									object.position.y = newz;
-									object.position.z = newy;
+									object.position.y = newy;
+									object.position.z = newz;
 									scene.add( object );
                                     
 									//label text
@@ -149,8 +149,8 @@
 									} );	
 									const textmesh = new THREE.Mesh( labelgeo, material );
 									textmesh.position.x = newx;
-									textmesh.position.y = newz+5;
-									textmesh.position.z = newy;
+									textmesh.position.y = newy;
+									textmesh.position.z = newz+5;
 									scene.add( textmesh ); //slow
 
 									//get max min
@@ -164,7 +164,8 @@
 								//console.log( maxx );
 								//console.log( maxy );
 								//console.log( maxz );
-								//adding max min boxex
+
+								//adding max min boxes
 								var newmaxx = maxx * zoomx;
 								var newmaxy = maxy * zoomy;
 								var newmaxz = maxz * zoomz;
@@ -180,13 +181,56 @@
 								//console.log( xl );
 								//console.log( yl );
 								//console.log( zl );
-								const geometryb = new THREE.BoxGeometry( xl, zl, yl );
+								const geometryb = new THREE.BoxGeometry( xl, yl, zl );
 								const edges = new THREE.EdgesGeometry( geometryb );
 								const line = new THREE.LineSegments( edges, new THREE.LineBasicMaterial( { color: 0xffffff } ) );
 								line.position.x = newminx + xl/2;
-								line.position.y = newminz + zl/2;
-								line.position.z = newminy + yl/2;
+								line.position.y = newminy + yl/2;
+								line.position.z = newminz + zl/2;
 								scene.add( line );
+
+								//adding arrows
+								const origin = new THREE.Vector3( newminx, newminy, newminz );
+								const colorhex = 0xffff00;
+								const lenghfactor = 1.5;//axis arrow length according to xyz length
+								const labelfontsize = 10;
+								//x y z, swap y and z to give physicial axis feeling
+								const arrowx = new THREE.ArrowHelper( new THREE.Vector3( 1, 0, 0 ), origin, xl*lenghfactor, colorhex );
+								const arrowy = new THREE.ArrowHelper( new THREE.Vector3( 0, 1, 0 ), origin, yl*lenghfactor, colorhex );
+								const arrowz = new THREE.ArrowHelper( new THREE.Vector3( 0, 0, 1 ), origin, zl*lenghfactor, colorhex );
+								scene.add( arrowx );
+								scene.add( arrowy );
+								scene.add( arrowz );
+								var label = new THREE.TextGeometry( "X", {
+										font: font,
+										size: labelfontsize,
+										height: labelfontsize / 2
+									} );	
+								const textmeshx = new THREE.Mesh( label, material );
+								textmeshx.position.x = newminx + xl/2;
+								textmeshx.position.y = newminy - 10;
+								textmeshx.position.z = newminz;
+								label = new THREE.TextGeometry( "Y", {
+										font: font,
+										size: labelfontsize,
+										height: labelfontsize / 2
+									} );	
+								const textmeshy = new THREE.Mesh( label, material );
+								textmeshy.position.x = newminx - 10;
+								textmeshy.position.y = newminy + yl/2;
+								textmeshy.position.z = newminz;
+								label = new THREE.TextGeometry( "Z", {
+										font: font,
+										size: labelfontsize,
+										height: labelfontsize / 2
+									} );	
+								const textmeshz = new THREE.Mesh( label, material );
+								textmeshz.position.x = newminx - 10;
+								textmeshz.position.y = newminy - 10;
+								textmeshz.position.z = newminz + zl/2;
+								scene.add( textmeshx ); 
+								scene.add( textmeshy ); 
+								scene.add( textmeshz ); 
 
 							},
 							// onProgress callback
