@@ -78,51 +78,74 @@
 				]);
 				scene.background = texturesky;
 
+
+
 				//const geometry = new THREE.BoxGeometry( 20, 20, 20 );
 				//const geometry = new THREE.BoxGeometry( 1, 1, 1 );
-				const geometry = new THREE.SphereGeometry( 0.5, 24, 12 );
-				//readcsv
-				var rawdata = null;
-				var loader = new THREE.FileLoader(); 
-				//load a text file and output the result to the console
-				loader.load(
-					// resource URL
-					'data3.csv',
-					// onLoad callback
-					function ( data ) 
-					{
-						var csvarry = data.split("\n");
+				const geometry = new THREE.SphereGeometry( 5, 24, 12 );
 
-						rawdata = new Array(csvarry.length);
+				//
+				const loaderf = new THREE.FontLoader();
+				loaderf.load( 'fonts/helvetiker_regular.typeface.json', function ( font ) {
 
-						for(var i = 1;i<csvarry.length;i++)
-						{
-							var temp = csvarry[i].split(",");
-							var x = parseFloat(temp[0])*10;
-							var y = parseFloat(temp[1])*10;
-							var z = parseFloat(temp[2])*1000;
+						//readcsv
+						var rawdata = null;
+						var loader = new THREE.FileLoader(); 
+						//load a text file and output the result to the console
+						loader.load(
+							// resource URL
+							'data2.csv',
+							// onLoad callback
+							function ( data ) 
+							{
+								var csvarry = data.split("\n");
 
-							rawdata[i]=new Array(3); 
-							rawdata[i][0]=x;
-							rawdata[i][1]=z; //swap y and z
-							rawdata[i][2]=y;
-							console.log( rawdata[i] );
+								rawdata = new Array(csvarry.length);
 
-							//add test
-							materialargs.color = new THREE.Color().setHSL(  parseFloat(temp[2])*20, 0.5, 0.5 );
+								for(var i = 1;i<csvarry.length;i++)
+								{
+									var temp = csvarry[i].split(",");
+									var x = parseFloat(temp[0])*10;
+									var y = parseFloat(temp[1])*10;
+									var z = parseFloat(temp[2])*1000;
 
-							const material = new THREE.MeshPhongMaterial( materialargs );
-							const object = new THREE.Mesh( geometry, material);
-							object.position.x = x;
-							object.position.y = z;
-							object.position.z = y;
-							scene.add( object );
+									rawdata[i]=new Array(3); 
+									rawdata[i][0]=x;
+									rawdata[i][1]=z; //swap y and z
+									rawdata[i][2]=y;
+									console.log( rawdata[i] );
+
+									//add test
+									materialargs.color = new THREE.Color().setHSL(  parseFloat(temp[2])*20, 0.5, 0.5 );
+
+									const material = new THREE.MeshPhongMaterial( materialargs );
+									const object = new THREE.Mesh( geometry, material);
+									object.position.x = x;
+									object.position.y = z;
+									object.position.z = y;
+									scene.add( object );
+                                    
+									//label text
+									const labelgeo = new THREE.TextGeometry( temp[2], {
+										font: font,
+										size: 1,
+										height: 1 / 2
+									} );	
+									const textmesh = new THREE.Mesh( labelgeo, material );
+									textmesh.position.x = x;
+									textmesh.position.y = z+5;
+									textmesh.position.z = y;
+									scene.add( textmesh ); //slow
+
+								};
+
+							}
+						);
+
+				} );
 
 
-						};
 
-					}
-				);
 				
 /* 				for ( let i = 0; i < 2000; i ++ ) {
 
