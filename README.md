@@ -92,3 +92,6 @@ yarn config set sqlite3_binary_host_mirror "https://foxgis.oss-cn-shanghai.aliyu
 yarn config set profiler_binary_host_mirror "https://npm.taobao.org/mirrors/node-inspector/"
 yarn config set chromedriver_cdnurl "https://cdn.npm.taobao.org/dist/chromedriver"
 ```
+
+# notice
+- 嵌入到threejs的div必须用position: absolute;否则鼠标指针选择事件获取的位置会有偏移
