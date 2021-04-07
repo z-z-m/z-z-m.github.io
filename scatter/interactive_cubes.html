@@ -48,15 +48,72 @@
 				scene = new THREE.Scene();
 				scene.background = new THREE.Color( 0xf0f0f0 );
 
-				const light = new THREE.DirectionalLight( 0xffffff, 1 );
-				light.position.set( 1, 1, 1 ).normalize();
-				scene.add( light );
+				//light
+				var light = new THREE.AmbientLight(0xffffff); // soft white light
+                scene.add(light);
+                var spotLight = new THREE.SpotLight(0xffffff);
+                spotLight.position.set(20, 30, 10);
+                spotLight.angle = 2.05;
+                spotLight.distance = 200;
+                scene.add(spotLight);
 
 
+				//skybox 
+				const loadersky = new THREE.CubeTextureLoader();
+				const texturesky = loadersky.load([
+				'./assets/nebula/posx.png',
+				'./assets/nebula/negx.png',
+				'./assets/nebula/posy.png',
+				'./assets/nebula/negy.png',
+				'./assets/nebula/posz.png',
+				'./assets/nebula/negz.png',
+				]);
+				scene.background = texturesky;
 
-				const geometry = new THREE.BoxGeometry( 20, 20, 20 );
+				//const geometry = new THREE.BoxGeometry( 20, 20, 20 );
+				const geometry = new THREE.BoxGeometry( 1, 1, 1 );
 
-				for ( let i = 0; i < 2000; i ++ ) {
+				//readcsv
+				var rawdata = null;
+				var loader = new THREE.FileLoader(); 
+				//load a text file and output the result to the console
+				loader.load(
+					// resource URL
+					'data3.csv',
+					// onLoad callback
+					function ( data ) 
+					{
+						var csvarry = data.split("\n");
+
+						rawdata = new Array(csvarry.length);
+
+						for(var i = 1;i<csvarry.length;i++)
+						{
+							var temp = csvarry[i].split(",");
+							var x = parseFloat(temp[0])*10;
+							var y = parseFloat(temp[1])*10;
+							var z = parseFloat(temp[2])*1000;
+
+							rawdata[i]=new Array(3); 
+							rawdata[i][0]=x;
+							rawdata[i][1]=z; //swap y and z
+							rawdata[i][2]=y;
+							console.log( rawdata[i] );
+
+							//add test
+							const object = new THREE.Mesh( geometry, new THREE.MeshLambertMaterial( { color: Math.random() * 0xffffff } ) );
+							object.position.x = x;
+							object.position.y = z;
+							object.position.z = y;
+							scene.add( object );
+
+
+						};
+
+					}
+				);
+				
+/* 				for ( let i = 0; i < 2000; i ++ ) {
 
 					const object = new THREE.Mesh( geometry, new THREE.MeshLambertMaterial( { color: Math.random() * 0xffffff } ) );
 
@@ -74,7 +131,7 @@
 
 					scene.add( object );
 
-				}
+				} */
 
 				raycaster = new THREE.Raycaster();
 
@@ -89,7 +146,7 @@
 
 				// init camera
 				camera = new THREE.PerspectiveCamera( 50, window.innerWidth / window.innerHeight, 1, 10000 );
-				camera.position.set( 500, 500, 500 );
+				camera.position.set( 50, 50, 50 );
 				camera.lookAt( scene.position );
 				controls = new OrbitControls( camera, renderer.domElement );
 				controls.enableRotate = true;
