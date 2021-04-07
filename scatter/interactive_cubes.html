@@ -78,10 +78,17 @@
 
 
 			const api = {
+				spherescale:1,
 				zoomx: 10,
 				zoomy: 10,
 				zoomz: 1000,
 			};
+
+
+			var rawdata = null;
+			var pointdata = null;
+			var textdata = null;
+
 
 			init();
 			animate();
@@ -107,9 +114,10 @@
 
 				scene.background = texturesky;
 				gui = new GUI();
-				gui.add( api, 'zoomx', 1, 1000 ).step( 1 ).onChange( drawchart );
-				gui.add( api, 'zoomy', 1, 1000 ).step( 1 ).onChange( drawchart );
-				gui.add( api, 'zoomz', 1, 10000 ).step( 1 ).onChange( drawchart );
+				gui.add( api, 'spherescale', 0.1, 10 ).step( 0.1 ).onChange( movechart );
+				gui.add( api, 'zoomx', 1, 1000 ).step( 1 ).onChange( movechart );
+				gui.add( api, 'zoomy', 1, 1000 ).step( 1 ).onChange( movechart );
+				gui.add( api, 'zoomz', 1, 10000 ).step( 1 ).onChange( movechart );
 
 				drawchart();
 
@@ -196,13 +204,12 @@
                 spotLight.distance = 200;
                 scene.add(spotLight);
 				
-				//const geometry = new THREE.BoxGeometry( 20, 20, 20 );
-				//const geometry = new THREE.BoxGeometry( 1, 1, 1 );
-				const geometry = new THREE.SphereGeometry( 5, 24, 12 );
+			
 
 				//load file with font
 
-                var rawdata = null;
+                
+				var spherescale = api.spherescale;//10;
 				var zoomx = api.zoomx;//10;
 				var zoomy = api.zoomy;//10;
 				var zoomz = api.zoomz;//1000;
@@ -212,6 +219,11 @@
 				var minx = 9999;
 				var miny = 9999;
 				var minz = 9999;
+
+			
+				//const geometry = new THREE.BoxGeometry( 20, 20, 20 );
+				//const geometry = new THREE.BoxGeometry( 1, 1, 1 );
+				const geometry = new THREE.SphereGeometry( 5, 24, 12 );
 
 				//adding text and points
 				const loaderf = new THREE.FontLoader();
@@ -240,7 +252,8 @@
 								var csvarry = strraw.split("\n");
 								//console.log( csvarry );
 								rawdata = new Array(csvarry.length);
-
+								pointdata = new Array(csvarry.length);
+								textdata = new Array(csvarry.length);
 								for(var i = 1;i<csvarry.length;i++)
 								{
 									var temp = csvarry[i].split(",");
@@ -249,10 +262,7 @@
 									var y = parseFloat(temp[1]);
 									var z = parseFloat(temp[2]);
 
-									rawdata[i]=new Array(3); 
-									rawdata[i][0]=x;
-									rawdata[i][1]=y; 
-									rawdata[i][2]=z;
+									rawdata[i]=new THREE.Vector3( x, y, z );; 
 									//console.log( rawdata[i] );
                                     var newx = x*zoomx;
 									var newy = y*zoomy;
@@ -265,8 +275,12 @@
 									object.position.x = newx;
 									object.position.y = newy;
 									object.position.z = newz;
+									//object.geometry.radius=(spherescale);
+									object.scale.set(spherescale,spherescale,spherescale );
 									scene.add( object );
                                     
+								    pointdata[i] = object;
+
 									//label text
 									const labelgeo = new THREE.TextGeometry( temp[2], {
 										font: font,
@@ -278,6 +292,8 @@
 									textmesh.position.y = newy;
 									textmesh.position.z = newz+5;
 									scene.add( textmesh ); //slow
+
+									textdata[i] = textmesh;
 
 									//get max min
 									if(maxx<x){maxx=x};
@@ -371,6 +387,35 @@
 				
 			}
 
+
+			function movechart()
+			{
+				var spherescale = api.spherescale;//10;
+				var zoomx = api.zoomx;//10;
+				var zoomy = api.zoomy;//10;
+				var zoomz = api.zoomz;//1000;
+				if(rawdata)
+				{
+					for(var i = 1;i<rawdata.length;i++)
+					{
+						console.log(rawdata[i]);
+						if(pointdata[i])
+						{
+							pointdata[i].scale.set(spherescale,spherescale,spherescale);
+						}
+
+						pointdata[i].position.x = rawdata[i].x*zoomx;
+						pointdata[i].position.y = rawdata[i].y*zoomy;
+						pointdata[i].position.z = rawdata[i].z*zoomz;
+
+						textdata[i].position.x = rawdata[i].x*zoomx;
+						textdata[i].position.y = rawdata[i].y*zoomy;
+						textdata[i].position.z = rawdata[i].z*zoomz+5;
+					}
+
+				}
+
+			}
 			//
 
 			function animate() {
@@ -411,7 +456,7 @@
 							};
 
 							INTERSECTED = intersects[ 0 ].object;
-							INTERSECTED.currentHex = INTERSECTED.material.emissive.getHex();
+							if ( INTERSECTED.material.emissive ) INTERSECTED.currentHex = INTERSECTED.material.emissive.getHex();
 							INTERSECTED.material.emissive.setHex( 0xff0000 );
 
 						}
