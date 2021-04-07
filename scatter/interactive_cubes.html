@@ -43,10 +43,10 @@
 		<script type="module">
 
 			import * as THREE from './lib/three.module.js';
-
+            import { GUI } from './lib/dat.gui.module.js';
 			import Stats from './lib/stats.module.js';
             import { OrbitControls } from './lib/OrbitControls.module.js';
-			let container, stats;
+			let container, stats,gui;
 			let camera, scene, raycaster, renderer, controls;
 
 			let theta = 0;
@@ -74,9 +74,16 @@
 				//alert(event.target.id);
 				while(scene.children.length > 0){ 
 				scene.remove(scene.children[0]); 
-			}
+				}
 				drawchart();
 			}
+
+
+			const api = {
+				zoomx: 10,
+				zoomy: 10,
+				zoomz: 1000,
+			};
 
 			init();
 			animate();
@@ -99,7 +106,12 @@
 				'./assets/nebula/posz.png',
 				'./assets/nebula/negz.png',
 				]);
+
 				scene.background = texturesky;
+				gui = new GUI();
+				gui.add( api, 'zoomx', 1, 1000 ).step( 1 ).onChange( drawchart );
+				gui.add( api, 'zoomy', 1, 1000 ).step( 1 ).onChange( drawchart );
+				gui.add( api, 'zoomz', 1, 10000 ).step( 1 ).onChange( drawchart );
 
 				drawchart();
 
@@ -173,6 +185,10 @@
 
 			function drawchart()
 			{
+				while(scene.children.length > 0){ 
+					scene.remove(scene.children[0]); 
+				}
+
 				//light
 				var light = new THREE.AmbientLight(0xffffff); // soft white light
                 scene.add(light);
@@ -189,9 +205,9 @@
 				//load file with font
 
                 var rawdata = null;
-				var zoomx = 10;
-				var zoomy = 10;
-				var zoomz = 1000;
+				var zoomx = api.zoomx;//10;
+				var zoomy = api.zoomy;//10;
+				var zoomz = api.zoomz;//1000;
 				var maxx = -9999;
 				var maxy = -9999;
 				var maxz = -9999;
