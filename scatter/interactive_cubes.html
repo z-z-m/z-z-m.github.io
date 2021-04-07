@@ -62,33 +62,22 @@
 
 			function onButtonClick(event) {
 				//alert(event.target.id);
-				
+				while(scene.children.length > 0){ 
+				scene.remove(scene.children[0]); 
+			}
 				drawchart();
 			}
-			
+
 			init();
 			animate();
 
 			function init() {
-
-
-
 
 				container = document.createElement( 'div' );
 				document.body.appendChild( container );
 
 				scene = new THREE.Scene();
 				scene.background = new THREE.Color( 0xf0f0f0 );
-
-				//light
-				var light = new THREE.AmbientLight(0xffffff); // soft white light
-                scene.add(light);
-                var spotLight = new THREE.SpotLight(0xffffff);
-                spotLight.position.set(20, 30, 10);
-                spotLight.angle = 2.05;
-                spotLight.distance = 200;
-                scene.add(spotLight);
-
 
 				//skybox 
 				const loadersky = new THREE.CubeTextureLoader();
@@ -174,7 +163,14 @@
 
 			function drawchart()
 			{
-
+				//light
+				var light = new THREE.AmbientLight(0xffffff); // soft white light
+                scene.add(light);
+                var spotLight = new THREE.SpotLight(0xffffff);
+                spotLight.position.set(20, 30, 10);
+                spotLight.angle = 2.05;
+                spotLight.distance = 200;
+                scene.add(spotLight);
 				
 				//const geometry = new THREE.BoxGeometry( 20, 20, 20 );
 				//const geometry = new THREE.BoxGeometry( 1, 1, 1 );
