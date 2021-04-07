@@ -31,7 +31,7 @@
 		<button style="bottom:0" id="spell" class="ui">Spell</button>
 		<button style="right:0" id="health" class="ui">Health</button>
 		<button style="right:0; bottom:0;" id="shield" class="ui">Shield</button> -->
-		<div id="data">
+		<div id="data" style="width:40%; height:60%;">
 			<textarea id="csvdata" rows="4" cols="50" >
 				paste data here;
 			</textarea>
@@ -70,7 +70,7 @@
 
 			function onButtonClick(event) {
 				var x = document.getElementById("csvdata").value;
-				alert(x);
+				//alert(x);
 				//alert(event.target.id);
 				while(scene.children.length > 0){ 
 				scene.remove(scene.children[0]); 
@@ -213,8 +213,18 @@
 							// onLoad callback
 							function ( data ) 
 							{
-								var csvarry = data.split("\n");
+								var strraw = data;
+								var x = document.getElementById("csvdata").value;
+                                //alert(x);
+								if(x.toLowerCase().includes("x"))
+								{
+									console.log( x );
+									strraw = x.replaceAll("\t",",");
+									//console.log( strraw );
+								}
 
+								var csvarry = strraw.split("\n");
+								//console.log( csvarry );
 								rawdata = new Array(csvarry.length);
 
 								for(var i = 1;i<csvarry.length;i++)
