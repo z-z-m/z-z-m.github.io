@@ -25,13 +25,21 @@
 	<body>
 
 		<div id="info">
-			<a href="https://threejs.org" target="_blank" rel="noopener">three.js</a> webgl - interactive cubes
+			<a href="https://threejs.org" target="_blank" rel="noopener">three.js</a> webgl - scatterplot
 		</div>
 <!-- 		<button style="top:0" id="fire" class="ui">Fire</button>
 		<button style="bottom:0" id="spell" class="ui">Spell</button>
 		<button style="right:0" id="health" class="ui">Health</button>
 		<button style="right:0; bottom:0;" id="shield" class="ui">Shield</button> -->
-		<button style="right:0; bottom:0;" id="shield" class="ui">reload</button>
+		<div id="data">
+			<textarea id="csvdata" rows="4" cols="50" >
+				paste data here;
+			</textarea>
+			<button style="right:0; bottom:0;" id="shield">reload</button>
+		</div>
+		
+
+			
 		<script type="module">
 
 			import * as THREE from './lib/three.module.js';
