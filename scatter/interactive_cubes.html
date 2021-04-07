@@ -257,11 +257,17 @@
                                 //alert(x);
 								if(x.toLowerCase().includes("x"))
 								{
-									console.log( x );
+									//console.log( x );
 									strraw = x.replaceAll("\t",",");
 									//console.log( strraw );
 								}
-
+								x = params.data.toLowerCase().replaceAll(" ","\n").replaceAll("\t",",");
+								if(x.includes("x"))
+								{
+									//console.log( x );
+									strraw = x;
+									//console.log( strraw );
+								}
 								var csvarry = strraw.split("\n");
 								//console.log( csvarry );
 								csvdata = new Array(csvarry.length);
