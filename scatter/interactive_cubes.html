@@ -84,12 +84,24 @@
 				//const geometry = new THREE.BoxGeometry( 1, 1, 1 );
 				const geometry = new THREE.SphereGeometry( 5, 24, 12 );
 
-				//
+				//load file with font
+
+                var rawdata = null;
+				var zoomx = 10;
+				var zoomy = 10;
+				var zoomz = 1000;
+				var maxx = -9999;
+				var maxy = -9999;
+				var maxz = -9999;
+				var minx = 9999;
+				var miny = 9999;
+				var minz = 9999;
+
 				const loaderf = new THREE.FontLoader();
 				loaderf.load( 'fonts/helvetiker_regular.typeface.json', function ( font ) {
 
 						//readcsv
-						var rawdata = null;
+						
 						var loader = new THREE.FileLoader(); 
 						//load a text file and output the result to the console
 						loader.load(
@@ -105,24 +117,26 @@
 								for(var i = 1;i<csvarry.length;i++)
 								{
 									var temp = csvarry[i].split(",");
-									var x = parseFloat(temp[0])*10;
-									var y = parseFloat(temp[1])*10;
-									var z = parseFloat(temp[2])*1000;
+									var x = parseFloat(temp[0]);
+									var y = parseFloat(temp[1]);
+									var z = parseFloat(temp[2]);
 
 									rawdata[i]=new Array(3); 
 									rawdata[i][0]=x;
 									rawdata[i][1]=z; //swap y and z
 									rawdata[i][2]=y;
-									console.log( rawdata[i] );
-
+									//console.log( rawdata[i] );
+                                    var newx = x*zoomx;
+									var newy = y*zoomy;
+									var newz = z*zoomz;
 									//add test
 									materialargs.color = new THREE.Color().setHSL(  parseFloat(temp[2])*20, 0.5, 0.5 );
 
 									const material = new THREE.MeshPhongMaterial( materialargs );
 									const object = new THREE.Mesh( geometry, material);
-									object.position.x = x;
-									object.position.y = z;
-									object.position.z = y;
+									object.position.x = newx;
+									object.position.y = newz;
+									object.position.z = newy;
 									scene.add( object );
                                     
 									//label text
@@ -132,13 +146,24 @@
 										height: 1 / 2
 									} );	
 									const textmesh = new THREE.Mesh( labelgeo, material );
-									textmesh.position.x = x;
-									textmesh.position.y = z+5;
-									textmesh.position.z = y;
+									textmesh.position.x = newx;
+									textmesh.position.y = newz+5;
+									textmesh.position.z = newy;
 									scene.add( textmesh ); //slow
 
+									//get max min
+									if(maxx<x){maxx=x};
+									if(maxy<y){maxy=y};
+									if(maxz<z){maxz=z};
+									if(minx>x){minx=x};
+									if(miny>y){miny=y};
+									if(minz>z){minz=z};
 								};
 
+							},
+							// onProgress callback
+							function ( xhr ) {
+									console.log( (xhr.loaded / xhr.total * 100) + '% loaded' );
 							}
 						);
 
