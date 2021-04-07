@@ -121,7 +121,7 @@
 
 				scene.background = texturesky;
 				gui = new GUI();
-				gui.remember(controls);
+				gui.remember(params);
 				gui.add( params, "data").onFinishChange(drawchart); //need to redraw
 				gui.add( params, "h12limit").onFinishChange(drawchart); //need to redraw
 				gui.add( params, "sfactor").onFinishChange(drawchart); //need to redraw
@@ -321,7 +321,7 @@
 									const shapes = font.generateShapes( temp[2], 1 );
 									const tg = new THREE.ShapeGeometry( shapes );
 									tg.computeBoundingBox();
-									const textmesh = new THREE.Mesh( tg, matLite  );
+									const textmesh = new THREE.Mesh( tg, matDark  );
 
 									textmesh.position.x = newx;
 									textmesh.position.y = newy;
