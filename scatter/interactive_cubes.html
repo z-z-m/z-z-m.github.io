@@ -13,6 +13,13 @@
 			a {
 				color: #08f;
 			}
+			.ui {
+			position: absolute;
+			}
+
+			button{
+			margin: 20px;
+			}
 		</style>
 	</head>
 	<body>
@@ -20,7 +27,11 @@
 		<div id="info">
 			<a href="https://threejs.org" target="_blank" rel="noopener">three.js</a> webgl - interactive cubes
 		</div>
-
+<!-- 		<button style="top:0" id="fire" class="ui">Fire</button>
+		<button style="bottom:0" id="spell" class="ui">Spell</button>
+		<button style="right:0" id="health" class="ui">Health</button>
+		<button style="right:0; bottom:0;" id="shield" class="ui">Shield</button> -->
+		<button style="right:0; bottom:0;" id="shield" class="ui">reload</button>
 		<script type="module">
 
 			import * as THREE from './lib/three.module.js';
@@ -44,11 +55,24 @@
 					emissive: 0x000000
 				};
 
+			var buttons = document.getElementsByTagName("button");
+			for (let i = 0; i < buttons.length; i++) {
+			buttons[i].addEventListener("click", onButtonClick, false);
+			};
 
+			function onButtonClick(event) {
+				//alert(event.target.id);
+				
+				drawchart();
+			}
+			
 			init();
 			animate();
 
 			function init() {
+
+
+
 
 				container = document.createElement( 'div' );
 				document.body.appendChild( container );
@@ -78,8 +102,80 @@
 				]);
 				scene.background = texturesky;
 
+				drawchart();
+
+/* 				for ( let i = 0; i < 2000; i ++ ) {
+
+					const object = new THREE.Mesh( geometry, new THREE.MeshLambertMaterial( { color: Math.random() * 0xffffff } ) );
+
+					object.position.x = Math.random() * 800 - 400;
+					object.position.y = Math.random() * 800 - 400;
+					object.position.z = Math.random() * 800 - 400;
+
+					object.rotation.x = Math.random() * 2 * Math.PI;
+					object.rotation.y = Math.random() * 2 * Math.PI;
+					object.rotation.z = Math.random() * 2 * Math.PI;
+
+					object.scale.x = Math.random() + 0.5;
+					object.scale.y = Math.random() + 0.5;
+					object.scale.z = Math.random() + 0.5;
+
+					scene.add( object );
+
+				} */
+
+				raycaster = new THREE.Raycaster();
+
+				renderer = new THREE.WebGLRenderer();
+				renderer.setPixelRatio( window.devicePixelRatio );
+				renderer.setSize( window.innerWidth, window.innerHeight );
+				container.appendChild( renderer.domElement );
+
+				stats = new Stats();
+				container.appendChild( stats.dom );
 
 
+				// init camera
+				camera = new THREE.PerspectiveCamera( 50, window.innerWidth / window.innerHeight, 1, 10000 );
+				camera.position.set( 50, 50, 50 );
+				camera.lookAt( scene.position );
+				controls = new OrbitControls( camera, renderer.domElement );
+				controls.enableRotate = true;
+
+				document.addEventListener( 'pointermove', onPointerMove );
+
+				//
+
+				window.addEventListener( 'resize', onWindowResize );
+
+			}
+
+			function onWindowResize() {
+
+				const aspect = window.innerWidth / window.innerHeight;
+/* 
+				camera.left = - frustumSize * aspect / 2;
+				camera.right = frustumSize * aspect / 2;
+				camera.top = frustumSize / 2;
+				camera.bottom = - frustumSize / 2;
+ */
+				camera.updateProjectionMatrix();
+
+				renderer.setSize( window.innerWidth, window.innerHeight );
+
+			}
+
+			function onPointerMove( event ) {
+
+				pointer.x = ( event.clientX / window.innerWidth ) * 2 - 1;
+				pointer.y = - ( event.clientY / window.innerHeight ) * 2 + 1;
+
+			}
+
+			function drawchart()
+			{
+
+				
 				//const geometry = new THREE.BoxGeometry( 20, 20, 20 );
 				//const geometry = new THREE.BoxGeometry( 1, 1, 1 );
 				const geometry = new THREE.SphereGeometry( 5, 24, 12 );
@@ -243,72 +339,6 @@
 
 
 				
-/* 				for ( let i = 0; i < 2000; i ++ ) {
-
-					const object = new THREE.Mesh( geometry, new THREE.MeshLambertMaterial( { color: Math.random() * 0xffffff } ) );
-
-					object.position.x = Math.random() * 800 - 400;
-					object.position.y = Math.random() * 800 - 400;
-					object.position.z = Math.random() * 800 - 400;
-
-					object.rotation.x = Math.random() * 2 * Math.PI;
-					object.rotation.y = Math.random() * 2 * Math.PI;
-					object.rotation.z = Math.random() * 2 * Math.PI;
-
-					object.scale.x = Math.random() + 0.5;
-					object.scale.y = Math.random() + 0.5;
-					object.scale.z = Math.random() + 0.5;
-
-					scene.add( object );
-
-				} */
-
-				raycaster = new THREE.Raycaster();
-
-				renderer = new THREE.WebGLRenderer();
-				renderer.setPixelRatio( window.devicePixelRatio );
-				renderer.setSize( window.innerWidth, window.innerHeight );
-				container.appendChild( renderer.domElement );
-
-				stats = new Stats();
-				container.appendChild( stats.dom );
-
-
-				// init camera
-				camera = new THREE.PerspectiveCamera( 50, window.innerWidth / window.innerHeight, 1, 10000 );
-				camera.position.set( 50, 50, 50 );
-				camera.lookAt( scene.position );
-				controls = new OrbitControls( camera, renderer.domElement );
-				controls.enableRotate = true;
-
-				document.addEventListener( 'pointermove', onPointerMove );
-
-				//
-
-				window.addEventListener( 'resize', onWindowResize );
-
-			}
-
-			function onWindowResize() {
-
-				const aspect = window.innerWidth / window.innerHeight;
-/* 
-				camera.left = - frustumSize * aspect / 2;
-				camera.right = frustumSize * aspect / 2;
-				camera.top = frustumSize / 2;
-				camera.bottom = - frustumSize / 2;
- */
-				camera.updateProjectionMatrix();
-
-				renderer.setSize( window.innerWidth, window.innerHeight );
-
-			}
-
-			function onPointerMove( event ) {
-
-				pointer.x = ( event.clientX / window.innerWidth ) * 2 - 1;
-				pointer.y = - ( event.clientY / window.innerHeight ) * 2 + 1;
-
 			}
 
 			//
@@ -321,6 +351,8 @@
 				stats.update();
 
 			}
+
+
 
 			function render() {
 
