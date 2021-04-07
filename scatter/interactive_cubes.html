@@ -25,7 +25,7 @@
 	<body>
 
 		<div id="info">
-			<a href="https://threejs.org" target="_blank" rel="noopener">three.js</a> webgl - scatterplot
+		 scatterplot based on <a href="https://threejs.org" target="_blank" rel="noopener">three.js</a> made by zz@harbor
 		</div>
 <!-- 		<button style="top:0" id="fire" class="ui">Fire</button>
 		<button style="bottom:0" id="spell" class="ui">Spell</button>
@@ -237,8 +237,8 @@
 
 									rawdata[i]=new Array(3); 
 									rawdata[i][0]=x;
-									rawdata[i][1]=z; //swap y and z
-									rawdata[i][2]=y;
+									rawdata[i][1]=y; 
+									rawdata[i][2]=z;
 									//console.log( rawdata[i] );
                                     var newx = x*zoomx;
 									var newy = y*zoomy;
@@ -254,7 +254,7 @@
 									scene.add( object );
                                     
 									//label text
-									const labelgeo = new THREE.TextGeometry( z, {
+									const labelgeo = new THREE.TextGeometry( temp[2], {
 										font: font,
 										size: 1,
 										height: 1 / 2
