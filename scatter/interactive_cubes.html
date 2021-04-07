@@ -76,17 +76,24 @@
 				drawchart();
 			}
 
-
-			const api = {
-				spherescale:1,
-				zoomx: 10,
-				zoomy: 10,
-				zoomz: 1000,
-			};
+			function buttonFunction() {
+				//do button 
+				//stuff here.
+				while(scene.children.length > 0)
+				{ 
+					scene.remove(scene.children[0]); 
+				}
+				drawchart();
+			}
 			const params = {
 				h12limit: "0.015",
 				sfactor: "0.003",
 				useSfactor : true,
+				reloadbutton : buttonFunction,
+				spherescale:1,
+				zoomx: 10,
+				zoomy: 10,
+				zoomz: 1000,
 			}
 
 			var csvdata = null;
@@ -117,27 +124,17 @@
 				]);
 
 
-				//button to reload
-				var reloadButton = new function () {
-					this.reload = function() {
-						while(scene.children.length > 0)
-						{ 
-							scene.remove(scene.children[0]); 
-						}
-						drawchart();
-					}
-				};
 				scene.background = texturesky;
 				gui = new GUI();
 				gui.remember(controls);
 				gui.add( params, "h12limit").onFinishChange(drawchart); //need to redraw
 				gui.add( params, "sfactor").onFinishChange(drawchart); //need to redraw
 				gui.add( params, "useSfactor").onFinishChange(drawchart); //need to redraw
-				gui.add( reloadButton, 'reload').name("\[click to reload\]");
-				gui.add( api, 'spherescale', 0.1, 10 ).step( 0.1 ).onChange( movechart );
-				gui.add( api, 'zoomx', 1, 1000 ).step( 1 ).onChange( movechart );
-				gui.add( api, 'zoomy', 1, 1000 ).step( 1 ).onChange( movechart );
-				gui.add( api, 'zoomz', 1, 10000 ).step( 1 ).onChange( movechart );
+				gui.add( params, 'reloadbutton').name("\[click to reload\]");
+				gui.add( params, 'spherescale', 0.1, 10 ).step( 0.1 ).onChange( movechart );
+				gui.add( params, 'zoomx', 1, 1000 ).step( 1 ).onChange( movechart );
+				gui.add( params, 'zoomy', 1, 1000 ).step( 1 ).onChange( movechart );
+				gui.add( params, 'zoomz', 1, 10000 ).step( 1 ).onChange( movechart );
 
 				drawchart();
 
@@ -229,10 +226,10 @@
 				//load file with font
 
                 
-				var spherescale = api.spherescale;//10;
-				var zoomx = api.zoomx;//10;
-				var zoomy = api.zoomy;//10;
-				var zoomz = api.zoomz;//1000;
+				var spherescale = params.spherescale;//10;
+				var zoomx = params.zoomx;//10;
+				var zoomy = params.zoomy;//10;
+				var zoomz = params.zoomz;//1000;
 				var maxx = -9999;
 				var maxy = -9999;
 				var maxz = -9999;
@@ -411,10 +408,10 @@
 			function movechart()
 			{
 				console.log("move chart");
-				var spherescale = api.spherescale;//10;
-				var zoomx = api.zoomx;//10;
-				var zoomy = api.zoomy;//10;
-				var zoomz = api.zoomz;//1000;
+				var spherescale = params.spherescale;//10;
+				var zoomx = params.zoomx;//10;
+				var zoomy = params.zoomy;//10;
+				var zoomz = params.zoomz;//1000;
 				if(csvdata)
 				{
 					for(var i = 1;i<csvdata.length;i++)
