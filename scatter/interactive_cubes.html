@@ -69,6 +69,8 @@
 			};
 
 			function onButtonClick(event) {
+				var x = document.getElementById("csvdata").value;
+				alert(x);
 				//alert(event.target.id);
 				while(scene.children.length > 0){ 
 				scene.remove(scene.children[0]); 
