@@ -45,15 +45,13 @@
 				container = document.createElement( 'div' );
 				document.body.appendChild( container );
 
-				const aspect = window.innerWidth / window.innerHeight;
-				camera = new THREE.OrthographicCamera( frustumSize * aspect / - 2, frustumSize * aspect / 2, frustumSize / 2, frustumSize / - 2, 1, 1000 );
-
 				scene = new THREE.Scene();
 				scene.background = new THREE.Color( 0xf0f0f0 );
 
 				const light = new THREE.DirectionalLight( 0xffffff, 1 );
 				light.position.set( 1, 1, 1 ).normalize();
 				scene.add( light );
+
 
 
 				const geometry = new THREE.BoxGeometry( 20, 20, 20 );
@@ -88,11 +86,13 @@
 				stats = new Stats();
 				container.appendChild( stats.dom );
 
-                // controls
 
-                controls = new OrbitControls( camera, renderer.domElement );
-                controls.enableRotate = true;
-
+				// init camera
+				camera = new THREE.PerspectiveCamera( 50, window.innerWidth / window.innerHeight, 1, 10000 );
+				camera.position.set( 500, 500, 500 );
+				camera.lookAt( scene.position );
+				controls = new OrbitControls( camera, renderer.domElement );
+				controls.enableRotate = true;
 
 				document.addEventListener( 'pointermove', onPointerMove );
 
@@ -105,12 +105,12 @@
 			function onWindowResize() {
 
 				const aspect = window.innerWidth / window.innerHeight;
-
+/* 
 				camera.left = - frustumSize * aspect / 2;
 				camera.right = frustumSize * aspect / 2;
 				camera.top = frustumSize / 2;
 				camera.bottom = - frustumSize / 2;
-
+ */
 				camera.updateProjectionMatrix();
 
 				renderer.setSize( window.innerWidth, window.innerHeight );
@@ -139,12 +139,12 @@
 
 				theta += 0.1;
 
-				camera.position.x = radius * Math.sin( THREE.MathUtils.degToRad( theta ) );
+			/* 	camera.position.x = radius * Math.sin( THREE.MathUtils.degToRad( theta ) );
 				camera.position.y = radius * Math.sin( THREE.MathUtils.degToRad( theta ) );
 				camera.position.z = radius * Math.cos( THREE.MathUtils.degToRad( theta ) );
 				camera.lookAt( scene.position );
 
-				camera.updateMatrixWorld();
+				camera.updateMatrixWorld(); */
 
 				// find intersections
 
