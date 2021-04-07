@@ -246,7 +246,7 @@
 								for(var i = 1;i<csvarry.length;i++)
 								{
 									var temp = csvarry[i].split(",");
-									if(temp[0]==null){continue;}
+									if(temp[0]==null || temp[1]==null || temp[2]==null ){continue;}
 									var x = parseFloat(temp[0]);
 									var y = parseFloat(temp[1]);
 									var z = parseFloat(temp[2]);
@@ -401,27 +401,37 @@
 
 				raycaster.setFromCamera( pointer, camera );
 
-				const intersects = raycaster.intersectObjects( scene.children );
+				try {
+					const intersects = raycaster.intersectObjects( scene.children );
+					if ( intersects.length > 0 ) {
 
-/* 				if ( intersects.length > 0 ) {
+						if ( INTERSECTED != intersects[ 0 ].object ) {
 
-					if ( INTERSECTED != intersects[ 0 ].object ) {
+							if ( INTERSECTED ) 
+							{
+								if ( INTERSECTED.material.emissive ) INTERSECTED.material.emissive.setHex( INTERSECTED.currentHex )
+							};
 
-						if ( INTERSECTED ) INTERSECTED.material.emissive.setHex( INTERSECTED.currentHex );
+							INTERSECTED = intersects[ 0 ].object;
+							INTERSECTED.currentHex = INTERSECTED.material.emissive.getHex();
+							INTERSECTED.material.emissive.setHex( 0xff0000 );
 
-						INTERSECTED = intersects[ 0 ].object;
-						INTERSECTED.currentHex = INTERSECTED.material.emissive.getHex();
-						INTERSECTED.material.emissive.setHex( 0xff0000 );
+						}
+
+					} else {
+
+						if ( INTERSECTED )
+						{
+							if ( INTERSECTED.material.emissive ) INTERSECTED.material.emissive.setHex( INTERSECTED.currentHex )
+						};
+						INTERSECTED = null;
 
 					}
-
-				} else {
-
-					if ( INTERSECTED ) INTERSECTED.material.emissive.setHex( INTERSECTED.currentHex );
-
-					INTERSECTED = null;
-
-				} */
+				} catch (error) {
+					console.error(error);
+					// expected output: ReferenceError: nonExistentFunction is not defined
+					// Note - error messages will vary depending on browser
+				}
 
 				renderer.render( scene, camera );
 
