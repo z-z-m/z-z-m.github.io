@@ -129,7 +129,8 @@
 				data: "paste data here",
 				h12limit: "0.015",
 				sfactor: "0.003",
-				useSfactor : true,
+				useH12limit : true,
+				useSfactorlimit : true,
 				reloadbutton : buttonFunction,
 				savereport : saveexcelfunction,
 				spherescale:1,
@@ -167,17 +168,21 @@
 				scene.background = texturesky;
 				gui = new GUI();
 				gui.remember(params);
-				gui.add( params, "data").onFinishChange(drawchart); //need to redraw
-				gui.add( params, "h12limit").onFinishChange(drawchart); //need to redraw
-				gui.add( params, "sfactor").onFinishChange(drawchart); //need to redraw
-				gui.add( params, "useSfactor").onFinishChange(drawchart); //need to redraw
+				var f1 = gui.addFolder("parameter");
+				f1.add( params, "data").onFinishChange(drawchart); //need to redraw
+				f1.add( params, "h12limit").onFinishChange(drawchart); //need to redraw
+				f1.add( params, "sfactor").onFinishChange(drawchart); //need to redraw
+				f1.add( params, "useH12limit").onFinishChange(drawchart); //need to redraw
+				f1.add( params, "useSfactorlimit").onFinishChange(drawchart); //need to redraw
+				f1.open();
 				gui.add( params, 'reloadbutton').name("\[click to reload\]");
 				gui.add( params, 'savereport').name("\[click to saveexcel\]");
-				gui.add( params, 'spherescale', 0.1, 10 ).step( 0.1 ).onChange( movechart );
-				gui.add( params, 'labelscale', 1, 10 ).step( 1 ).onChange( movechart );
-				gui.add( params, 'zoomx', 1, 1000 ).step( 1 ).onChange( movechart );
-				gui.add( params, 'zoomy', 1, 1000 ).step( 1 ).onChange( movechart );
-				gui.add( params, 'zoomz', 1, 10000 ).step( 1 ).onChange( movechart );
+				var f2 = gui.addFolder("graphic scale");
+				f2.add( params, 'spherescale', 0.1, 10 ).step( 0.1 ).onChange( movechart );
+				f2.add( params, 'labelscale', 1, 10 ).step( 1 ).onChange( movechart );
+				f2.add( params, 'zoomx', 1, 1000 ).step( 1 ).onChange( movechart );
+				f2.add( params, 'zoomy', 1, 1000 ).step( 1 ).onChange( movechart );
+				f2.add( params, 'zoomz', 1, 10000 ).step( 1 ).onChange( movechart );
 
 				drawchart();
 
