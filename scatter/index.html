@@ -21,6 +21,7 @@
 			margin: 20px;
 			}
 		</style>
+		<script lang="javascript" src="./libs/sheetjs/xlsx.full.min.js"></script>
 	</head>
 	<body>
 
@@ -78,12 +79,59 @@
 				//stuff here.
 				drawchart();
 			}
+
+			
+			var csvdata = null;
+			
+			var pointdata = null;
+			var faildata = null;
+			var textdata = null;
+            
+			//
+			var rawarray = [];
+			var rawarrayheader = ["id","x","y","z"]
+			rawarray.push(rawarrayheader);
+
+
+			function saveexcelfunction() {
+				//excel sample
+				/* converts an array of array-like objects into an array of arrays */
+				function prep(arr) {
+					var out = [];
+					for(var i = 0; i < arr.length; ++i) {
+						if(!arr[i]) continue;
+						if(Array.isArray(arr[i])) { out[i] = arr[i]; continue };
+						var o = new Array();
+						Object.keys(arr[i]).forEach(function(k) { o[+k] = arr[i][k] });
+						out[i] = o;
+					}
+					return out;
+				}
+				/* build up workbook */
+				var wb = XLSX.utils.book_new();
+
+
+				/* build worksheet from the grid data */
+				var wsraw = XLSX.utils.aoa_to_sheet(prep(rawarray));
+
+				
+				XLSX.utils.book_append_sheet(wb, wsraw, 'raw');
+				
+
+				//
+				/* generate download */
+				XLSX.writeFile(wb, "report.xlsx");
+				// output the text to the console
+
+			}
+
 			const params = {
 				data: "paste data here",
 				h12limit: "0.015",
 				sfactor: "0.003",
 				useSfactor : true,
 				reloadbutton : buttonFunction,
+				savereport : saveexcelfunction,
 				spherescale:1,
 				labelscale:1,
 				zoomx: 10,
@@ -91,9 +139,6 @@
 				zoomz: 1000,
 			}
 
-			var csvdata = null;
-			var pointdata = null;
-			var textdata = null;
 
 
 			init();
@@ -127,6 +172,7 @@
 				gui.add( params, "sfactor").onFinishChange(drawchart); //need to redraw
 				gui.add( params, "useSfactor").onFinishChange(drawchart); //need to redraw
 				gui.add( params, 'reloadbutton').name("\[click to reload\]");
+				gui.add( params, 'savereport').name("\[click to saveexcel\]");
 				gui.add( params, 'spherescale', 0.1, 10 ).step( 0.1 ).onChange( movechart );
 				gui.add( params, 'labelscale', 1, 10 ).step( 1 ).onChange( movechart );
 				gui.add( params, 'zoomx', 1, 1000 ).step( 1 ).onChange( movechart );
@@ -299,6 +345,12 @@
 									var z = parseFloat(temp[2]);
 
 									csvdata[i]=new THREE.Vector3( x, y, z ); 
+                                    
+									//push to report
+									var rawarrayline = [i,x,y,z];
+									rawarray.push(rawarrayline);
+
+
 									//console.log( rawdata[i] );
                                     var newx = x*zoomx;
 									var newy = y*zoomy;
@@ -339,6 +391,11 @@
 									if(miny>y){miny=y};
 									if(minz>z){minz=z};
 								};
+
+								//getting fail data
+
+
+
 								//console.log( maxx );
 								//console.log( maxy );
 								//console.log( maxz );
