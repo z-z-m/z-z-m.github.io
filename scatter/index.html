@@ -299,8 +299,8 @@
 				var zoomx = params.zoomx;//10;
 				var zoomy = params.zoomy;//10;
 				var zoomz = params.zoomz;//1000;
-				var h12limitval = params.h12;
-				var sflimitval = params.sfactor;
+				var h12limitval = parseFloat(params.h12);
+				var sflimitval = parseFloat(params.sfactor);
 				var useh12 = params.useh12limit;
 				var usesf = params.useSfactorlimit;
 				var maxx = -9999;
@@ -412,10 +412,10 @@
 									for(var j = 1+i;i<csvdata.length;j++)
 									{
 										if(csvdata[i]==null || csvdata[j]==null){continue;}
-										//console.log(i);
-										//console.log(csvdata[i]);
-										//console.log(j);
-										//console.log(csvdata[j]);
+										console.log(i);
+										console.log(csvdata[i]);
+										console.log(j);
+										console.log(csvdata[j]);
                                         var h12 = Math.abs(csvdata[i].z - csvdata[j].z);
 										var distance = Math.sqrt(Math.pow(csvdata[i].x - csvdata[j].x, 2.0) + Math.pow(csvdata[i].y - csvdata[j].y, 2.0));
 										var sfactor = (distance == 0 && h12 == 0) ? 0 : h12 / distance;
@@ -428,17 +428,17 @@
 										//if both checked, fail when h12>h12 max and sfactor > sfactor limit
 										if (useh12 && usesf)
 										{
-											isfail = (h12 > parseFloat(h12limitval)) && (sfactor > parseFloat(sflimitval));
+											isfail = (h12 > h12limitval) && (sfactor > sflimitval);
 										}
 										//if only h12 checked,  fail when h12>h12 limit
 										if (useh12 && !usesf)
 										{
-											isfail = (h12 > parseFloat(h12limitval))
+											isfail = (h12 > h12limitval)
 										}
 										//if only sfactor checked,  fail when sfactor > sfactor limit
 										if (!useh12 && usesf)
 										{
-											isfail = (sfactor > parseFloat(sflimitval));
+											isfail = (sfactor > sflimitval);
 										}
 
 										if (isfail)
