@@ -493,9 +493,11 @@
 				}
 
 				var failcount = 0;
-				var h12limitval = parseFloat(params.h12);
+				var h12limitval = parseFloat(params.h12limit);
+				console.log("h12limitval");
+				console.log(h12limitval);
 				var sflimitval = parseFloat(params.sfactor);
-				var useh12 = params.useh12limit;
+				var useh12 = params.useH12limit;
 				var usesf = params.useSfactorlimit;
 				//getting fail data
 				for(var i = 1;i<csvdata.length;i++)
@@ -525,16 +527,19 @@
 						//if both checked, fail when h12>h12 max and sfactor > sfactor limit
 						if (useh12 && usesf)
 						{
-							isfail = (h12 > h12limitval) && (sfactor > sflimitval);
+							//console.log("using h12 and sfactor limit");
+							isfail = ((h12 > h12limitval) && (sfactor > sflimitval));
 						}
 						//if only h12 checked,  fail when h12>h12 limit
 						if (useh12 && !usesf)
 						{
+							//console.log("using h12 limit only");
 							isfail = (h12 > h12limitval)
 						}
 						//if only sfactor checked,  fail when sfactor > sfactor limit
 						if (!useh12 && usesf)
 						{
+							//console.log("using sfactor limit only");
 							isfail = (sfactor > sflimitval);
 						}
 
@@ -546,14 +551,14 @@
 							//dont do it now, do it when save report
 							var failline = [i,csvdata[i].x,csvdata[i].y,csvdata[i].z,j,csvdata[j].x,csvdata[j].y,csvdata[j].z,distance,h12,sfactor,"fail"]
 
-							console.log(failline);
+							//console.log(failline);
 
 							//fail data for report
 							failarray.push(failline); 
 
 							//add into fail dict pare
 							var failp2pline = [i,j]; 
-							console.log(failp2pline);
+							//console.log(failp2pline);
 							failp2pid.push(failp2pline);
 
 							//add line to scene
