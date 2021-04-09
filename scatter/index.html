@@ -199,7 +199,7 @@
 				f3.open();
 				var f4 = gui.addFolder("buttons");
 				f4.add( params, 'reloadbutton').name("\[click to reload\]");
-				var btnsave = f4.add( params, 'savereport').name("save");
+				var btnsave = f4.add( params, 'savereport').name("...save...");
 				f4.open();
 
 				//set save button style
@@ -248,8 +248,10 @@
 
 				// init camera
 				camera = new THREE.PerspectiveCamera( 50, window.innerWidth / window.innerHeight, 1, 10000 );
-				camera.position.set( 50, 50, 50 );
-				camera.lookAt( scene.position );
+				//camera.position.set( 50, 50, 50 );
+				//camera.lookAt( scene.position );
+				camera.position.set( 0, -600, 600 );
+				camera.lookAt( 0,0,0 );
 				controls = new OrbitControls( camera, renderer.domElement );
 				controls.enableRotate = true;
 
