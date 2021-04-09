@@ -45,7 +45,7 @@
             import { GUI } from './lib/dat.gui.module.js';
 			import Stats from './lib/stats.module.js';
             import { OrbitControls } from './lib/OrbitControls.module.js';
-			let container, stats,gui;
+			let container, stats, gui, guiStatsEl;
 			let camera, scene, raycaster, renderer, controls;
 
 			let theta = 0;
@@ -185,14 +185,22 @@
 				f1.add( params, "useH12limit").onFinishChange(drawchart); //need to redraw
 				f1.add( params, "useSfactorlimit").onFinishChange(drawchart); //need to redraw
 				f1.open();
-				gui.add( params, 'reloadbutton').name("\[click to reload\]");
-				gui.add( params, 'savereport').name("\[click to saveexcel\]");
 				var f2 = gui.addFolder("graphic scale");
 				f2.add( params, 'spherescale', 0.1, 10 ).step( 0.1 ).onChange( movechart );
 				f2.add( params, 'labelscale', 1, 10 ).step( 1 ).onChange( movechart );
 				f2.add( params, 'zoomx', 1, 1000 ).step( 1 ).onChange( movechart );
 				f2.add( params, 'zoomy', 1, 1000 ).step( 1 ).onChange( movechart );
 				f2.add( params, 'zoomz', 1, 10000 ).step( 1 ).onChange( movechart );
+				f2.open();
+				var f3 = gui.addFolder( 'Results' );
+				guiStatsEl = document.createElement( 'li' );
+				guiStatsEl.classList.add( 'gui-stats' );
+				f3.__ul.appendChild( guiStatsEl );
+				f3.open();
+				var f4 = gui.addFolder("buttons");
+				f4.add( params, 'reloadbutton').name("\[click to reload\]");
+				f4.add( params, 'savereport').name("\[click to save\]");
+				f4.open();
 
 				drawchart();
 
@@ -585,6 +593,9 @@
 
 				}
 				console.log( failcount );
+				guiStatsEl.innerHTML = [
+				'<i>Fails: </i>: ' + failcount
+				].join( '<br/>' );
 				//console.log( maxx );
 				//console.log( maxy );
 				//console.log( maxz );
