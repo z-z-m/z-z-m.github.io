@@ -86,7 +86,11 @@
 			var pointdata = null;
 			var faildata = null;
 			var textdata = null;
-            
+
+            var linedata = [];//line can not transform, have to remove then add them back
+			const lmaterial = new THREE.LineBasicMaterial( { color: 0xff0000 } );//line material used for faildata
+
+
 			//rawdata for report
 			var rawarray = [];
 			var rawarrayheader = ["id","x","y","z"]
@@ -294,16 +298,6 @@
 
 				//load file with font
 
-                
-				var spherescale = params.spherescale;//10;
-				var labelscale = params.labelscale;//10;
-				var zoomx = params.zoomx;//10;
-				var zoomy = params.zoomy;//10;
-				var zoomz = params.zoomz;//1000;
-				var h12limitval = parseFloat(params.h12);
-				var sflimitval = parseFloat(params.sfactor);
-				var useh12 = params.useh12limit;
-				var usesf = params.useSfactorlimit;
 				var maxx = -9999;
 				var maxy = -9999;
 				var maxz = -9999;
@@ -311,7 +305,7 @@
 				var miny = 9999;
 				var minz = 9999;
 
-			    var failcount = 0;
+			    
 				//const geometry = new THREE.BoxGeometry( 20, 20, 20 );
 				//const geometry = new THREE.BoxGeometry( 1, 1, 1 );
 				const geometry = new THREE.SphereGeometry( 5, 24, 12 );
@@ -368,9 +362,9 @@
 
 
 									//console.log( rawdata[i] );
-                                    var newx = x*zoomx;
-									var newy = y*zoomy;
-									var newz = z*zoomz;
+                                    var newx = x*params.zoomx;
+									var newy = y*params.zoomy;
+									var newz = z*params.zoomz;
 									//add test
 									materialargs.color = new THREE.Color().setHSL(  parseFloat(z)*20, 0.5, 0.5 );
 
@@ -380,7 +374,7 @@
 									object.position.y = newy;
 									object.position.z = newz;
 									//object.geometry.radius=(spherescale);
-									object.scale.set(spherescale,spherescale,spherescale );
+									object.scale.set(params.spherescale,params.spherescale,params.spherescale );
 									scene.add( object );
                                     
 								    pointdata[i] = object;
@@ -394,7 +388,7 @@
 									textmesh.position.x = newx;
 									textmesh.position.y = newy;
 									textmesh.position.z = newz+5;
-									textmesh.scale.set(labelscale,labelscale,labelscale );
+									textmesh.scale.set(params.labelscale,params.labelscale,params.labelscale );
 									scene.add( textmesh ); //slow
 
 									textdata[i] = textmesh;
@@ -408,85 +402,16 @@
 									if(minz>z){minz=z};
 								};
 
-								//getting fail data
-								for(var i = 1;i<csvdata.length;i++)
-							    {
-									for(var j = 1+i;j<csvdata.length;j++)
-									{
-										if(csvdata[i]==null || csvdata[j]==null){continue;}
-										//console.log(i);
-										//console.log(csvdata[i]);
-										//console.log(j);
-										//console.log(csvdata[j]);
-                                        var h12 = Math.abs(csvdata[i].z - csvdata[j].z);
-										var distancex = csvdata[i].x - csvdata[j].x;
-										var distancey = csvdata[i].y - csvdata[j].y;
-										//var distance = Math.pow(distancex, 2.0) + Math.pow(distancey, 2.0);
-										//var distance = Point2D.distance(csvdata[i].x, csvdata[i].y, csvdata[j].x, csvdata[j].y);;
-										var distance = Math.hypot(distancex, distancey);
-										//console.log(distance);
-										//var manhanttondistance = distancex + distancey;
-										var sfactor = (distance == 0 && h12 == 0) ? 0 : h12 / distance;
-										//
-										//
-										//
-										
-										var isfail = false;
-
-										//if both checked, fail when h12>h12 max and sfactor > sfactor limit
-										if (useh12 && usesf)
-										{
-											isfail = (h12 > h12limitval) && (sfactor > sflimitval);
-										}
-										//if only h12 checked,  fail when h12>h12 limit
-										if (useh12 && !usesf)
-										{
-											isfail = (h12 > h12limitval)
-										}
-										//if only sfactor checked,  fail when sfactor > sfactor limit
-										if (!useh12 && usesf)
-										{
-											isfail = (sfactor > sflimitval);
-										}
-
-										if (isfail)
-										{
-											failcount += 1;
-											//passfail = "Fail";
-
-										    //dont do it now, do it when save report
-											var failline = [i,csvdata[i].x,csvdata[i].y,csvdata[i].z,j,csvdata[j].x,csvdata[j].y,csvdata[j].z,distance,h12,sfactor,"fail"]
-				
-											console.log(failline);
- 
-											//fail data for report
-											failarray.push(failline); 
-
-											//add into fail dict pare
-											var failp2pline = [i,j]; 
-											console.log(failp2pline);
-											failp2pid.push(failp2pline);
-										}
-										else
-										{
-											//passfail = "Pass";
-										}
-									
-									}
-
-								}
-								console.log( failcount );
-								//console.log( maxx );
-								//console.log( maxy );
-								//console.log( maxz );
+                                //get fail data and draw lines;
+								getfaildata();
 
 								//adding max min boxes
-								var newmaxx = maxx * zoomx;
-								var newmaxy = maxy * zoomy;
-								var newmaxz = maxz * zoomz;
-								var newminx = minx * zoomx;
-								var newminy = miny * zoomy;
-								var newminz = minz * zoomz;
+								var newmaxx = maxx * params.zoomx;
+								var newmaxy = maxy * params.zoomy;
+								var newmaxz = maxz * params.zoomz;
+								var newminx = minx * params.zoomx;
+								var newminy = miny * params.zoomy;
+								var newminz = minz * params.zoomz;
 								const material = new THREE.LineBasicMaterial({
 									color: 0x0000ff
 								});
@@ -559,11 +484,114 @@
 
 				
 			}
+            function getfaildata()
+			{
+				//remove old lines
+				for(var l = 0;l<linedata.length;l++)
+				{
+					scene.remove(linedata[l]); 
+				}
 
+				var failcount = 0;
+				var h12limitval = parseFloat(params.h12);
+				var sflimitval = parseFloat(params.sfactor);
+				var useh12 = params.useh12limit;
+				var usesf = params.useSfactorlimit;
+				//getting fail data
+				for(var i = 1;i<csvdata.length;i++)
+				{
+					for(var j = 1+i;j<csvdata.length;j++)
+					{
+						if(csvdata[i]==null || csvdata[j]==null){continue;}
+						//console.log(i);
+						//console.log(csvdata[i]);
+						//console.log(j);
+						//console.log(csvdata[j]);
+						var h12 = Math.abs(csvdata[i].z - csvdata[j].z);
+						var distancex = csvdata[i].x - csvdata[j].x;
+						var distancey = csvdata[i].y - csvdata[j].y;
+						//var distance = Math.pow(distancex, 2.0) + Math.pow(distancey, 2.0);
+						//var distance = Point2D.distance(csvdata[i].x, csvdata[i].y, csvdata[j].x, csvdata[j].y);;
+						var distance = Math.hypot(distancex, distancey);
+						//console.log(distance);
+						//var manhanttondistance = distancex + distancey;
+						var sfactor = (distance == 0 && h12 == 0) ? 0 : h12 / distance;
+						//
+						//
+						//
+						
+						var isfail = false;
+
+						//if both checked, fail when h12>h12 max and sfactor > sfactor limit
+						if (useh12 && usesf)
+						{
+							isfail = (h12 > h12limitval) && (sfactor > sflimitval);
+						}
+						//if only h12 checked,  fail when h12>h12 limit
+						if (useh12 && !usesf)
+						{
+							isfail = (h12 > h12limitval)
+						}
+						//if only sfactor checked,  fail when sfactor > sfactor limit
+						if (!useh12 && usesf)
+						{
+							isfail = (sfactor > sflimitval);
+						}
+
+						if (isfail)
+						{
+							failcount += 1;
+							//passfail = "Fail";
+
+							//dont do it now, do it when save report
+							var failline = [i,csvdata[i].x,csvdata[i].y,csvdata[i].z,j,csvdata[j].x,csvdata[j].y,csvdata[j].z,distance,h12,sfactor,"fail"]
+
+							console.log(failline);
+
+							//fail data for report
+							failarray.push(failline); 
+
+							//add into fail dict pare
+							var failp2pline = [i,j]; 
+							console.log(failp2pline);
+							failp2pid.push(failp2pline);
+
+							//add line to scene
+							//Line3( start : Vector3, end : Vector3 )
+							//create a blue LineBasicMaterial
+							//const lgeometry = new THREE.Line3(csvdata[i],csvdata[j]);
+							const points = [];
+							points.push( new THREE.Vector3( csvdata[i].x*params.zoomx,  csvdata[i].y*params.zoomy,  csvdata[i].z*params.zoomz ) );
+							points.push( new THREE.Vector3( csvdata[j].x*params.zoomx,  csvdata[j].y*params.zoomy,  csvdata[j].z*params.zoomz ) );
+							const lgeometry = new THREE.BufferGeometry().setFromPoints( points );
+							
+							const line = new THREE.Line( lgeometry, lmaterial );
+							linedata.push(line);
+							scene.add( line );
+
+
+						}
+						else
+						{
+							//passfail = "Pass";
+						}
+					
+					}
+
+				}
+				console.log( failcount );
+				//console.log( maxx );
+				//console.log( maxy );
+				//console.log( maxz );
+			}
 
 			function movechart()
 			{
 				console.log("move chart");
+				//get fail data and re-generate lines
+				getfaildata();
+
+                //move existing point and text
 				var spherescale = params.spherescale;//10;
 				var labelscale = params.labelscale;//10;
 				var zoomx = params.zoomx;//10;
