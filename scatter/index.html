@@ -199,8 +199,19 @@
 				f3.open();
 				var f4 = gui.addFolder("buttons");
 				f4.add( params, 'reloadbutton').name("\[click to reload\]");
-				f4.add( params, 'savereport').name("\[click to save\]");
+				var btnsave = f4.add( params, 'savereport').name("save");
 				f4.open();
+
+				//set save button style
+				var fourthStyle = btnsave.domElement.previousSibling.style;
+
+				fourthStyle.backgroundImage = 'url(https://cdn4.iconfinder.com/data/icons/small-n-flat/24/floppy-32.png)';
+				fourthStyle.backgroundRepeat = 'no-repeat';
+				fourthStyle.backgroundPosition = 'right';
+				fourthStyle.backgroundColor = 'white';
+				fourthStyle.color = 'blue';
+
+				console.log(fourthStyle);
 
 				drawchart();
 
