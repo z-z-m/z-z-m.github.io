@@ -99,6 +99,7 @@
 			var failarrayheader = ["PointA-ID","PointA-X","PointA-Y","PointA-Z","PointB-ID","PointB-X","PointB-Y","PointB-Z","Distance","H12","SFactor","Result"]
 			failarray.push(failarrayheader);
 
+
 			function saveexcelfunction() {
 				//excel sample
 				/* converts an array of array-like objects into an array of arrays */
@@ -310,7 +311,7 @@
 				var miny = 9999;
 				var minz = 9999;
 
-			
+			    var failcount = 0;
 				//const geometry = new THREE.BoxGeometry( 20, 20, 20 );
 				//const geometry = new THREE.BoxGeometry( 1, 1, 1 );
 				const geometry = new THREE.SphereGeometry( 5, 24, 12 );
@@ -325,7 +326,7 @@
 						//load a text file and output the result to the console
 						loader.load(
 							// resource URL
-							'https://raw.githubusercontent.com/z-z-m/z-z-m.github.io/main/scatter/data.csv',
+							'https://raw.githubusercontent.com/z-z-m/z-z-m.github.io/main/scatter/data2.csv',
 							// onLoad callback
 							function ( data ) 
 							{
@@ -350,6 +351,7 @@
 								csvdata = new Array(csvarry.length);
 								pointdata = new Array(csvarry.length);
 								textdata = new Array(csvarry.length);
+
 								for(var i = 1;i<csvarry.length;i++)  //0 is header so we start from 1
 								{
 									var temp = csvarry[i].split(",");
@@ -409,15 +411,21 @@
 								//getting fail data
 								for(var i = 1;i<csvdata.length;i++)
 							    {
-									for(var j = 1+i;i<csvdata.length;j++)
+									for(var j = 1+i;j<csvdata.length;j++)
 									{
 										if(csvdata[i]==null || csvdata[j]==null){continue;}
-										console.log(i);
-										console.log(csvdata[i]);
-										console.log(j);
-										console.log(csvdata[j]);
+										//console.log(i);
+										//console.log(csvdata[i]);
+										//console.log(j);
+										//console.log(csvdata[j]);
                                         var h12 = Math.abs(csvdata[i].z - csvdata[j].z);
-										var distance = Math.sqrt(Math.pow(csvdata[i].x - csvdata[j].x, 2.0) + Math.pow(csvdata[i].y - csvdata[j].y, 2.0));
+										var distancex = csvdata[i].x - csvdata[j].x;
+										var distancey = csvdata[i].y - csvdata[j].y;
+										//var distance = Math.pow(distancex, 2.0) + Math.pow(distancey, 2.0);
+										//var distance = Point2D.distance(csvdata[i].x, csvdata[i].y, csvdata[j].x, csvdata[j].y);;
+										var distance = Math.hypot(distancex, distancey);
+										//console.log(distance);
+										//var manhanttondistance = distancex + distancey;
 										var sfactor = (distance == 0 && h12 == 0) ? 0 : h12 / distance;
 										//
 										//
@@ -443,16 +451,16 @@
 
 										if (isfail)
 										{
-											//failcount += 1;
+											failcount += 1;
 											//passfail = "Fail";
 
 										    //dont do it now, do it when save report
-											//var failline = [i,csvdata[i].x,csvdata[i].y,csvdata[i].z,j,csvdata[j].x,csvdata[j].y,csvdata[j].z,distance,h12,Sfactor,"fail"]
+											var failline = [i,csvdata[i].x,csvdata[i].y,csvdata[i].z,j,csvdata[j].x,csvdata[j].y,csvdata[j].z,distance,h12,sfactor,"fail"]
 				
-											//console.log(failline);
-
+											console.log(failline);
+ 
 											//fail data for report
-											//failarray.push(failline);
+											failarray.push(failline); 
 
 											//add into fail dict pare
 											var failp2pline = [i,j]; 
@@ -467,8 +475,7 @@
 									}
 
 								}
-
-
+								console.log( failcount );
 								//console.log( maxx );
 								//console.log( maxy );
 								//console.log( maxz );
